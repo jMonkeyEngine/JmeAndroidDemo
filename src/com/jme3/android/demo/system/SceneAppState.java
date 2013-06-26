@@ -4,16 +4,9 @@
  */
 package com.jme3.android.demo.system;
 
-import com.jme3.animation.AnimControl;
-import com.jme3.animation.SkeletonControl;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 /**

@@ -1,0 +1,19 @@
+Material MyMaterial : Common/MatDefs/Misc/Unshaded.j3md {
+    MaterialParameters {
+        ColorMap : Textures/Trees.png
+        AlphaDiscardThreshold : 0.5
+        LightMap : Textures/Scene/lightMap.png
+        SeparateTexCoord : true
+    }
+    AdditionalRenderState {
+      FaceCull Off
+      Wireframe Off
+      DepthWrite On
+      PolyOffset 0.0 0.0
+      AlphaTestFalloff 0.0
+      Blend Off
+      PointSprite Off
+      ColorWrite On
+      DepthTest On
+    }
+}
