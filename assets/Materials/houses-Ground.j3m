@@ -1,0 +1,9 @@
+Material MyMaterial : Common/MatDefs/Misc/Unshaded.j3md {
+    MaterialParameters {
+        LightMap : Textures/Scene/lightMap.png
+        SeparateTexCoord : true
+        ColorMap : Textures/Scene/groundMap.jpg
+    }
+    AdditionalRenderState {
+    }
+}

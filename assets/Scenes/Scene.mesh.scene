@@ -1,0 +1,388 @@
+<scene formatVersion="1.0.1" export_time="1370637396.008559" exported_by="Nehon" previous_export_time="1370636685.773936" >
+  <nodes >
+    <node name="Trees3.East" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.728.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.728" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees3.South" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.727.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.727" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees3.North" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.726.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.726" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees1.East" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.725.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.725" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees1.South" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.724.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.724" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees1.North" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.723.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.723" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees2.East" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.722.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.722" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees2.Soutn" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.721.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.721" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees2.North" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.720.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.720" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees1.West" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.719.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.719" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees3.West" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.718.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.718" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trees2.West" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Plane.496.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Plane.496" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage2" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.008.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.008" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage7" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.007.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.007" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk3" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.006.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.006" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk4" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.005.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.005" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk5" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.004.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.004" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk7" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.002.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.002" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk1" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.000.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.000" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage6" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree2.004.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree2.004" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage4" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree2.003.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree2.003" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage5" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree2.001.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree2.001" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage3" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.003.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.003" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk6" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree2.002.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree2.002" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="SmallHouse3" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="SmallHouse3.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="SmallHouse3" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="LHouse2" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="LHouse2.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="LHouse2" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="SmallHouse2" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="SmallHouse2.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="SmallHouse2" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Ground" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Ground.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Ground" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Sun.001" >
+      <position z="-33.881001" y="32.681046" x="32.861763" />
+      <rotation qw="0.221280" qz="0.336475" qy="-0.442691" qx="-0.801152" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+    </node>
+    <node name="Sun" >
+      <position z="-125.690140" y="75.058128" x="-55.523567" />
+      <rotation qw="0.873393" qz="0.229731" qy="0.008244" qx="-0.429348" />
+      <scale z="2.716583" y="2.716583" x="2.716583" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light name="Sun" shadow="true" type="directional" powerScale="1.0" >
+        <position z="-125.690140" y="75.058128" x="-55.523567" />
+        <lightAttenuation quadratic="0.0" constant="1.0" linear="0.04" range="5000" />
+        <direction z="-0.754" y="-0.526" x="-0.394" />
+        <colourDiffuse g="1.0" r="1.0" b="1.0" />
+        <colourSpecular g="1.0" r="1.0" b="1.0" />
+        <colourShadow g="1.0" r="1.0" b="1.0" />
+      </light>
+    </node>
+    <node name="Camera" >
+      <position z="-31.282034" y="1.334767" x="49.348724" />
+      <rotation qw="0.120257" qz="-0.749833" qy="0.634913" qx="0.142037" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera fov="0.5033799435163735" name="Camera" projectionType="perspective" >
+        <clipping far="200.0" near="0.10000000149011612" farPlaneDist="200.0" nearPlaneDist="0.10000000149011612" />
+      </camera>
+    </node>
+    <node name="LHouse1" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="LHouse1.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="LHouse1" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Tower" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="Tower.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="Tower" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="BigBuilding" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="BigBuilding.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="BigBuilding" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="SmallHouse1" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="SmallHouse1.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="SmallHouse1" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Trunk2" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree1.001.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree1.001" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+    <node name="Foliage1" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qw="1.000000" qz="-0.000000" qy="0.000000" qx="0.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity meshFile="tree2.mesh" physics_type="STATIC" anisotropic_friction="False" velocity_max="0.0" friction_y="1.0" mass="1.0" mass_radius="1.0" ghost="False" inertia_tensor="0.4000000059604645" friction_z="1.0" velocity_min="0.0" friction_x="1.0" lock_rot_z="False" lock_rot_x="False" lock_rot_y="False" actor="False" name="tree2" lock_trans_y="False" lock_trans_x="False" lock_trans_z="False" damping_rot="0.10000000149011612" damping_trans="0.03999999910593033" />
+    </node>
+  </nodes>
+  <externals />
+  <environment >
+    <colourDiffuse g="0.6480615139007568" r="0.6913431286811829" b="0.6981933116912842" />
+    <colourBackground g="0.6480615139007568" r="0.6913431286811829" b="0.6981933116912842" />
+    <colourAmbient g="0.0" r="0.0" b="0.0" />
+  </environment>
+</scene>

@@ -1,0 +1,13 @@
+Material My Material : Common/MatDefs/Misc/Unshaded.j3md {
+     MaterialParameters {
+        AlphaDiscardThreshold : 0.4
+        LightMap : Textures/Scene/lightMap.png
+        ColorMap : Repeat Textures/Scene/Cross09.png
+        SeparateTexCoord : true
+     }
+    AdditionalRenderState {
+      DepthWrite On
+      DepthTest On
+      FaceCull Off
+    }
+}

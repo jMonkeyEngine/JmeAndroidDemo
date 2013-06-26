@@ -1,0 +1,10 @@
+Material My Material : Common/MatDefs/Misc/Unshaded.j3md {
+     MaterialParameters {
+        ColorMap : Flip Textures/Scene/trees1.png
+        LightMap : Textures/Scene/lightMap.png
+        AlphaDiscardThreshold : 0.4
+     }
+    AdditionalRenderState {
+      FaceCull Off
+    }
+}
