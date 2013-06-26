@@ -3,7 +3,7 @@ JmeAndroidDemo
 
 The goal of this project is to demonstrate JME 3.0 capabilities on Android.
 
-Here are the jars used for the project to compile\n
+Here are the jars used for the project to compile<br/>
 In the SDK create a new library named lastSVNJme3 and put those jars in it\\
 jME3-blender.jar\\
 jME3-core.jar\\
