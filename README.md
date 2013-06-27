@@ -13,7 +13,7 @@ jME3-lwjgl-natives.jar<br/>
 jME3-lwjgl.jar<br/>
 jME3-niftygui.jar<br/>
 jME3-plugins.jar<br/>
-jME3-terrain.jar\\
+jME3-terrain.jar<br/>
 eventbus.jar<br/>
 j-ogg-oggd.jar<br/>
 j-ogg-vorbisd.jar<br/>
