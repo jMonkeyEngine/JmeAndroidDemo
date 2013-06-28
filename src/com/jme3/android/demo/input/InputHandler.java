@@ -84,7 +84,7 @@ public class InputHandler extends AbstractAppState implements
     }
 
     private void registerInputs() {
-        inputManager.setSimulateMouse(false);
+//        inputManager.setSimulateMouse(false);
 
         // Android touch mapping
         inputManager.addMapping(TOUCH, new TouchTrigger(TouchInput.ALL));
@@ -111,7 +111,7 @@ public class InputHandler extends AbstractAppState implements
                 MOUSE_WHEEL_AXIS_POS, MOUSE_WHEEL_AXIS_NEG
                 );
 
-
+        inputManager.addRawInputListener(this);
     }
 
     public void setCharacterMotion(CharacterMotion characterMotion) {
@@ -126,9 +126,9 @@ public class InputHandler extends AbstractAppState implements
         }
     }
 
-    private void processCharacterMotion(float x, float y, float tpf) {
+    private void processCharacterMotion(boolean active, float x, float y, float tpf) {
         if (characterMotion != null) {
-            characterMotion.processMotionRequest(x, y, tpf);
+            characterMotion.processMotionRequest(active, x, y, tpf);
         }
     }
 
@@ -204,22 +204,24 @@ public class InputHandler extends AbstractAppState implements
 
     public void onMouseMotionEvent(MouseMotionEvent mme) {
         if (motionPointerId != null) {
-            processCharacterMotion((float)mme.getX(), (float)mme.getY(), localTPF);
+//            logger.log(Level.INFO, "onMouseMotionEvent: {0}", mme.toString());
+            processCharacterMotion(true, (float)mme.getX(), (float)mme.getY(), localTPF);
             mme.setConsumed();
         }
     }
 
     public void onMouseButtonEvent(MouseButtonEvent mbe) {
+//        logger.log(Level.INFO, "onMouseButtonEvent: {0}", mbe.toString());
         if (mbe.getButtonIndex() == MouseInput.BUTTON_LEFT) {
             if (mbe.isPressed()) {
                 if (checkCharacterMotion((float)mbe.getX(), (float)mbe.getY())) {
                     motionPointerId = MouseInput.BUTTON_LEFT;
-                    processCharacterMotion((float)mbe.getX(), (float)mbe.getY(), localTPF);
+                    processCharacterMotion(true, (float)mbe.getX(), (float)mbe.getY(), localTPF);
                     mbe.setConsumed();
                 }
             } else {
                 if (motionPointerId != null) {
-                    processCharacterMotion((float)mbe.getX(), (float)mbe.getY(), localTPF);
+                    processCharacterMotion(false, (float)mbe.getX(), (float)mbe.getY(), localTPF);
                     motionPointerId = null;
                     mbe.setConsumed();
                 }

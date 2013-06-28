@@ -23,9 +23,13 @@ public interface CharacterMotion {
     /**
      * Provides the x and y screen coordinates of the touch event so the
      * character motion implementation can move the character.
+     * The active will generally be true until the InputHandler detects the end
+     * of events being processed for character motion.  In this case, the last
+     * call will have active = false.
+     * @param active True while InputHandler is processing motion events
      * @param x Screen x location in pixels
      * @param y Screen y location in pixels
      * @param tpf Time per Frame in sec.
      */
-    public void processMotionRequest(float x, float y, float tpf);
+    public void processMotionRequest(boolean active, float x, float y, float tpf);
 }
