@@ -22,11 +22,21 @@ import com.jme3.math.Vector3f;
 public class Main extends SimpleApplication {
 
     private boolean stats = true;
+    private SceneAppState sceneAppState;
     private BulletAppState bulletAppState = new BulletAppState();
+    private float totalTime = 0f;
 
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
+    }
+
+    public SceneAppState getSceneAppState() {
+        return sceneAppState;
+    }
+
+    public BulletAppState getBulletAppState() {
+        return bulletAppState;
     }
 
     @Override
@@ -37,10 +47,10 @@ public class Main extends SimpleApplication {
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
 
-        SceneAppState sceneAppState = new SceneAppState(viewPort, assetManager, bulletAppState);
+        sceneAppState = new SceneAppState();
         stateManager.attach(sceneAppState);
 
-        RTSCameraHandler camHandler = new RTSCameraHandler(cam, sceneAppState.getScene());
+        RTSCameraHandler camHandler = new RTSCameraHandler(cam, rootNode);
         camHandler.registerInputs(inputManager);
 
         CharacterHandler jaime = new CharacterHandler(assetManager, "Models/Jaime/JaimeOptimized.j3o");
@@ -68,6 +78,20 @@ public class Main extends SimpleApplication {
         }, "touch");
         inputManager.addMapping("touch", new TouchTrigger(TouchInput.ALL));
     }
+
+    @Override
+    public void simpleUpdate(float tpf) {
+//        totalTime += tpf;
+//        if (totalTime > 30) {
+//            sceneAppState.setEnabled(true);
+//        } else if (totalTime > 20) {
+//            sceneAppState.setEnabled(false);
+//        }
+    }
+
+
+
+
 //
 //    private Vector3f pick(float x, float y) {
 //        TempVars vars = TempVars.get();
