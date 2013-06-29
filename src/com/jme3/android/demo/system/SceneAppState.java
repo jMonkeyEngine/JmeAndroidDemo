@@ -58,8 +58,8 @@ public class SceneAppState extends AbstractAppState {
     }
 
     public void addMainCharacter(CharacterHandler mainCharacter){
-        if (mainCharacter != null) {
-            mainCharacter.getModel().removeFromParent();
+        if (this.mainCharacter != null) {
+            this.mainCharacter.getModel().removeFromParent();
         }
         this.mainCharacter = mainCharacter;
         worldNode.attachChild(mainCharacter.getModel());
