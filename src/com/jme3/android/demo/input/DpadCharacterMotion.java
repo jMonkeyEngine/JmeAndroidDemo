@@ -11,14 +11,14 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
  * @author iwgeric
  */
-public class DpadCharacterMotion extends AbstractAppState implements CharacterMotion {
+public class DpadCharacterMotion extends AbstractAppState implements
+        LocationInputListener, ValueInputListener {
     private static final Logger logger = Logger.getLogger(DpadCharacterMotion.class.getName());
 
     private AppStateManager stateManager = null;
@@ -27,6 +27,8 @@ public class DpadCharacterMotion extends AbstractAppState implements CharacterMo
     private Node guiNode = null;
     private Node rootNode = null;
     private AppSettings appSettings = null;
+
+    private Integer pointerId = null;
 
     private Node dpadNode = new Node("dpad");
     private SelectablePicture dpadPicture = null;
@@ -44,6 +46,7 @@ public class DpadCharacterMotion extends AbstractAppState implements CharacterMo
         dpadPicture.setHeight(256f);
         dpadNode.attachChild(dpadPicture);
         dpadNode.setLocalTranslation(0, 0, 0);
+        pointerId = null;
         setEnabled(true);
     }
 
@@ -72,6 +75,7 @@ public class DpadCharacterMotion extends AbstractAppState implements CharacterMo
                 guiNode.detachChild(dpadNode);
             }
         }
+        pointerId = null;
         super.setEnabled(enabled);
     }
 
@@ -85,7 +89,58 @@ public class DpadCharacterMotion extends AbstractAppState implements CharacterMo
         super.cleanup();
     }
 
-    public boolean checkSelect(float x, float y) {
+    public boolean onValue(ValueType valueType, int pointerId, float value, float tpf) {
+        boolean consumed = false;
+        if (isEnabled()) {
+            switch (valueType) {
+                case PINCH:
+                    if (this.pointerId != null) {
+                        // block zooming while navigating with dpad
+                        // still allows x axis and y axis dragging for camera rotation
+                        consumed = true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return consumed;
+    }
+
+    public boolean onLocation(LocationType locationType, int pointerId, float locX, float locY, float tpf) {
+        boolean consumed = false;
+        if (isEnabled()) {
+//            logger.log(Level.INFO, "onLocation for inputType: {0}, pointerId: {1}, x:{2}, y:{3}, tpf: {4}",
+//                    new Object[]{locationType, pointerId, locX, locY, tpf});
+            switch (locationType) {
+                case DOWN:
+                    if (this.pointerId == null && checkSelect(locX, locY)) {
+                        this.pointerId = pointerId;
+                        processMotionRequest(true, locX, locY, tpf);
+                        consumed = true;
+                    }
+                    break;
+                case UP:
+                    if (this.pointerId != null && this.pointerId == pointerId) {
+                        processMotionRequest(false, locX, locY, tpf);
+                        this.pointerId = null;
+                        consumed = true;
+                    }
+                    break;
+                case MOVE:
+                    if (this.pointerId != null && this.pointerId == pointerId) {
+                        processMotionRequest(true, locX, locY, tpf);
+                        consumed = true;
+                    }
+                    break;
+                default:
+                    consumed = false;
+            }
+        }
+        return consumed;
+    }
+
+    private boolean checkSelect(float x, float y) {
         if (isEnabled() && dpadPicture != null) {
             return dpadPicture.checkSelect(x, y);
         } else {
@@ -93,12 +148,12 @@ public class DpadCharacterMotion extends AbstractAppState implements CharacterMo
         }
     }
 
-    public void processMotionRequest(boolean active, float x, float y, float tpf) {
+    private void processMotionRequest(boolean active, float x, float y, float tpf) {
         if (isEnabled()) {
-            logger.log(Level.INFO, "processMotionRequest for x:{0}, y:{1}, tpf: {2}",
-                    new Object[]{x, y, tpf});
+//            logger.log(Level.INFO, "processMotionRequest for x:{0}, y:{1}, tpf: {2}",
+//                    new Object[]{x, y, tpf});
             Vector2f locationRatio = dpadPicture.getLocationRatioFromCenter(x, y);
-            logger.log(Level.INFO, "dpad ratio: {0}", locationRatio.toString());
+//            logger.log(Level.INFO, "dpad ratio: {0}", locationRatio.toString());
             if (characterControl != null) {
                 if (active) {
                     Vector3f walk = new Vector3f(maxVelocity,0,maxVelocity);

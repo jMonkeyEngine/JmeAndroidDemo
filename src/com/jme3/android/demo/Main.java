@@ -1,8 +1,10 @@
 package com.jme3.android.demo;
 
+import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.DpadCharacterMotion;
 import com.jme3.android.demo.input.InputHandler;
-import com.jme3.android.demo.input.RTSCameraHandler;
+import com.jme3.android.demo.input.LocationInputListener.LocationType;
+import com.jme3.android.demo.input.ValueInputListener.ValueType;
 import com.jme3.android.demo.system.CharacterHandler;
 import com.jme3.android.demo.system.SceneAppState;
 import com.jme3.app.FlyCamAppState;
@@ -12,7 +14,6 @@ import com.jme3.input.TouchInput;
 import com.jme3.input.controls.TouchListener;
 import com.jme3.input.controls.TouchTrigger;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.Vector3f;
 
 /**
  * Main application for JME3.0 android demo
@@ -50,24 +51,38 @@ public class Main extends SimpleApplication {
         sceneAppState = new SceneAppState();
         stateManager.attach(sceneAppState);
 
-        RTSCameraHandler camHandler = new RTSCameraHandler(cam, rootNode);
-        camHandler.registerInputs(inputManager);
-
         CharacterHandler jaime = new CharacterHandler(assetManager, "Models/Jaime/JaimeOptimized.j3o");
         sceneAppState.addMainCharacter(jaime);
         bulletAppState.getPhysicsSpace().add(jaime.getCharPhysicsControl());
 
-        camHandler.lookAt(jaime.getModel().getWorldTranslation());
-
         DpadCharacterMotion dpadCharacterMotion = new DpadCharacterMotion();
         stateManager.attach(dpadCharacterMotion);
-
-        InputHandler inputHandler = new InputHandler();
-        inputHandler.setCharacterMotion(dpadCharacterMotion);
-        stateManager.attach(inputHandler);
-
         dpadCharacterMotion.setCharacterControl(jaime.getCharPhysicsControl());
 
+        CameraHandler cameraHandler = new CameraHandler(cam);
+        cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE, jaime.getModel());
+        cameraHandler.init();
+
+        // Kept assigning input listener in Main to control the order.
+        // inputs are sent to the classes based on order added
+        // each input class can consume the input to prevent remaining classes
+        // from getting the input event
+        InputHandler inputHandler = new InputHandler();
+        inputHandler.addLocationInputListener(dpadCharacterMotion,
+                LocationType.DOWN, LocationType.UP, LocationType.MOVE);
+        inputHandler.addValueInputListener(dpadCharacterMotion,
+                ValueType.PINCH);
+
+        // TODO: Add sceneAppState input listener here when ready to be able to detect
+        // object picking in the scene before the events get sent to the camera class
+
+        inputHandler.addLocationInputListener(cameraHandler,
+                LocationType.DOWN, LocationType.UP);
+        inputHandler.addValueInputListener(cameraHandler,
+                ValueType.X_AXIS_DRAG, ValueType.Y_AXIS_DRAG, ValueType.PINCH);
+        stateManager.attach(inputHandler);
+
+        // TODO: convert to InputHandler listener
         inputManager.addListener(new TouchListener() {
             public void onTouch(String name, TouchEvent event, float tpf) {
                 if (event.getType() == TouchEvent.Type.DOUBLETAP) {
