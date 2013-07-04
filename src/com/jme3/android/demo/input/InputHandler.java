@@ -1,7 +1,5 @@
 package com.jme3.android.demo.input;
 
-import com.jme3.android.demo.input.LocationInputListener.LocationType;
-import com.jme3.android.demo.input.ValueInputListener.ValueType;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -14,11 +12,9 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.input.event.TouchEvent.Type;
+import com.jme3.util.IntMap;
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,40 +41,17 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
 
     private long lastFrameNanos = 0;
     private float localTPF = 0;
-    private Map<LocationType, ArrayList<LocationInputListener>> locationInputListenerMap =
-            new EnumMap<LocationType, ArrayList<LocationInputListener>>(LocationType.class);
-    private Map<ValueType, ArrayList<ValueInputListener>> valueInputListenerMap =
-            new EnumMap<ValueType, ArrayList<ValueInputListener>>(ValueType.class);
+    private ArrayList<InputActionListener> inputActionListeners = new ArrayList<InputActionListener>();
 
-    public void addValueInputListener(ValueInputListener listener, ValueType... valueTypes) {
-        for (ValueType valueType : valueTypes) {
-            ArrayList<ValueInputListener> valueInputListeners = valueInputListenerMap.get(valueType);
-            if (valueInputListeners == null) {
-                valueInputListeners = new ArrayList<ValueInputListener>();
-            }
-            if (valueInputListeners.contains(listener)) {
-                logger.log(Level.INFO, "{0} alread mapped to {1}",
-                        new Object[]{valueType, listener.getClass().getName()});
-            } else {
-                valueInputListeners.add(listener);
-            }
-            valueInputListenerMap.put(valueType, valueInputListeners);
-        }
-    }
+    private IntMap<Long> mouseDownButtons = new IntMap<Long>();
+    private long singleTapMaxTime = (long)(0.25 * 1000000000); // 0.25sec in nanoseconds
 
-    public void addLocationInputListener(LocationInputListener listener, LocationType... locationTypes) {
-        for (LocationType locationType : locationTypes) {
-            ArrayList<LocationInputListener> locationInputListeners = locationInputListenerMap.get(locationType);
-            if (locationInputListeners == null) {
-                locationInputListeners = new ArrayList<LocationInputListener>();
-            }
-            if (locationInputListeners.contains(listener)) {
-                logger.log(Level.INFO, "{0} alread mapped to {1}",
-                        new Object[]{locationType, listener.getClass().getName()});
-            } else {
-                locationInputListeners.add(listener);
-            }
-            locationInputListenerMap.put(locationType, locationInputListeners);
+    public void addInputActionListener(InputActionListener listener) {
+        if (inputActionListeners.contains(listener)) {
+            logger.log(Level.INFO, "InputActionListener {0} already added.",
+                    new Object[]{listener.getClass().getName()});
+        } else {
+            inputActionListeners.add(listener);
         }
     }
 
@@ -112,27 +85,17 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
         //        );
     }
 
-    private boolean processLocationInput(LocationType locationType, int pointerId, float locX, float locY, float tpf) {
-        boolean consumed = false;
-        ArrayList<LocationInputListener> locationInputListeners = locationInputListenerMap.get(locationType);
-        if (locationInputListeners != null) {
-            for (LocationInputListener listener: locationInputListeners) {
-                consumed = listener.onLocation(locationType, pointerId, locX, locY, tpf);
-                if (consumed) {
-//                    logger.log(Level.INFO, "consumed by: {0}", listener.getClass().getName());
-                    break;
-                }
-            }
-        }
-        return consumed;
+    public static void dumpEvent(String from, TouchEvent event) {
+//        logger.log(Level.INFO, "******** Event Dump from: {0} ********", from);
+//        logger.log(Level.INFO, "pointerid: {0}, type: {1}, x: {2}, y: {3}, dx: {4}, dy: {5}, scalespan: {6}, dscalespan: {7}",
+//                new Object[]{event.getPointerId(), event.getType(), event.getX(), event.getY(), event.getDeltaX(), event.getDeltaY(), event.getScaleSpan(), event.getDeltaScaleSpan()});
     }
 
-    private boolean processValueInput(ValueType valueType, int pointerId, float value, float tpf) {
+    private boolean processInputAction(TouchEvent event, float tpf) {
         boolean consumed = false;
-        ArrayList<ValueInputListener> valueInputListeners = valueInputListenerMap.get(valueType);
-        if (valueInputListeners != null) {
-            for (ValueInputListener listener: valueInputListeners) {
-                consumed = listener.onValue(valueType, pointerId, value, tpf);
+        if (inputActionListeners != null) {
+            for (InputActionListener listener: inputActionListeners) {
+                consumed = listener.onInputAction(event, tpf);
                 if (consumed) {
 //                    logger.log(Level.INFO, "consumed by: {0}", listener.getClass().getName());
                     break;
@@ -176,23 +139,7 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
 
         inputManager.removeRawInputListener(this);
 
-        Set<Entry<ValueType, ArrayList<ValueInputListener>>> entries = valueInputListenerMap.entrySet();
-        for (Entry<ValueType, ArrayList<ValueInputListener>> entry: entries) {
-            ArrayList<ValueInputListener> listeners = entry.getValue();
-            if (listeners != null) {
-                listeners.clear();
-            }
-        }
-        valueInputListenerMap.clear();
-
-        Set<Entry<LocationType, ArrayList<LocationInputListener>>> entriesRaw = locationInputListenerMap.entrySet();
-        for (Entry<LocationType, ArrayList<LocationInputListener>> entry: entriesRaw) {
-            ArrayList<LocationInputListener> listeners = entry.getValue();
-            if (listeners != null) {
-                listeners.clear();
-            }
-        }
-        locationInputListenerMap.clear();
+        inputActionListeners.clear();
 
         super.cleanup();
     }
@@ -213,36 +160,59 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
     }
 
     public void onMouseMotionEvent(MouseMotionEvent mme) {
-        boolean consumed = processLocationInput(LocationType.MOVE, MouseInput.BUTTON_LEFT, (float)mme.getX(), (float)mme.getY(), localTPF);
-        if (consumed) {
-            mme.setConsumed();
-        } else {
-            if (mme.getDX() != 0) {
-                processValueInput(ValueType.X_AXIS_DRAG, MouseInput.BUTTON_LEFT, (float)mme.getDX(), localTPF);
-            }
-
-            if (mme.getDY() != 0) {
-                processValueInput(ValueType.Y_AXIS_DRAG, MouseInput.BUTTON_LEFT, (float)mme.getDY(), localTPF);
-            }
-
-            if (mme.getDeltaWheel() != 0) {
-                processValueInput(ValueType.PINCH, MouseInput.BUTTON_MIDDLE, (float)mme.getDeltaWheel(), localTPF);
-            }
+        TouchEvent event;
+        if (mme.getDeltaWheel() != 0) {
+            event = new TouchEvent(Type.SCALE_MOVE, mme.getX(), mme.getY(), mme.getDX(), mme.getDY());
+            event.setPointerId(MouseInput.BUTTON_LEFT);
+            event.setScaleSpan(mme.getWheel());
+            event.setDeltaScaleSpan(mme.getDeltaWheel());
+            dumpEvent(this.getClass().getName() + ": onMouseMotionEvent", event);
+            processInputAction(event, localTPF);
         }
+        event = new TouchEvent(Type.MOVE, mme.getX(), mme.getY(), mme.getDX(), mme.getDY());
+        event.setPointerId(MouseInput.BUTTON_LEFT);
+        event.setScaleSpan(mme.getWheel());
+        event.setDeltaScaleSpan(mme.getDeltaWheel());
+        dumpEvent(this.getClass().getName() + ": onMouseMotionEvent", event);
+        processInputAction(event, localTPF);
+
     }
 
     public void onMouseButtonEvent(MouseButtonEvent mbe) {
 //        logger.log(Level.INFO, "onMouseButtonEvent buttonIndex: {0}, isPressed: {1}, locX: {2}, locY: {3}, localTPF: {4}",
 //                new Object[]{mbe.getButtonIndex(), mbe.isPressed(), mbe.getX(), mbe.getY(), localTPF});
-        LocationType locationType;
-        if (mbe.isPressed()) {
-            locationType = LocationType.DOWN;
-        } else {
-            locationType = LocationType.UP;
+        long time = System.nanoTime();
+        long downTimeElapsed = 999999999;
+        Long mouseDownTime = mouseDownButtons.get(mbe.getButtonIndex());
+        boolean consumed = false;
+
+        if (mouseDownTime == null) {
+            mouseDownButtons.put(mbe.getButtonIndex(), time);
         }
-        boolean consumed = processLocationInput(locationType, mbe.getButtonIndex(), (float)mbe.getX(), (float)mbe.getY(), localTPF);
-        if (consumed) {
-            mbe.setConsumed();
+
+        Type type;
+        if (mbe.isPressed()) {
+            type = Type.DOWN;
+            mouseDownButtons.put(mbe.getButtonIndex(), time);
+        } else {
+            type = Type.UP;
+            downTimeElapsed = (time - mouseDownTime.longValue());// / 1000000000.0;
+        }
+        TouchEvent event;
+        event = new TouchEvent(type, mbe.getX(), mbe.getY(), 0, 0);
+        event.setPointerId(mbe.getButtonIndex());
+        event.setScaleSpan(0);
+        event.setDeltaScaleSpan(0);
+        dumpEvent(this.getClass().getName() + ": onMouseButtonEvent", event);
+        processInputAction(event, localTPF);
+
+        if (downTimeElapsed <= singleTapMaxTime) {
+            event = new TouchEvent(Type.TAP, mbe.getX(), mbe.getY(), 0, 0);
+            event.setPointerId(mbe.getButtonIndex());
+            event.setScaleSpan(0);
+            event.setDeltaScaleSpan(0);
+            dumpEvent(this.getClass().getName() + ": onMouseButtonEvent", event);
+            processInputAction(event, localTPF);
         }
     }
 
@@ -250,35 +220,11 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
     }
 
     public void onTouchEvent(TouchEvent te) {
-//        logger.log(Level.INFO, "onTouchEvent pointerId: {0}, type: {1}, x: {2}, y: {3}",
-//                new Object[]{te.getPointerId(), te.getType(), te.getX(), te.getY()});
-        boolean consumed = false;
-        switch (te.getType()) {
-            case DOWN:
-                consumed = processLocationInput(LocationType.DOWN, te.getPointerId(), te.getX(), te.getY(), localTPF);
-                if (consumed) {
-                    te.setConsumed();
-                }
-                break;
-            case UP:
-                consumed = processLocationInput(LocationType.UP, te.getPointerId(), te.getX(), te.getY(), localTPF);
-                if (consumed) {
-                    te.setConsumed();
-                }
-                break;
-            case MOVE:
-                consumed = processLocationInput(LocationType.MOVE, te.getPointerId(), te.getX(), te.getY(), localTPF);
-                if (consumed) {
-                    te.setConsumed();
-                } else {
-                    processValueInput(ValueType.X_AXIS_DRAG, MouseInput.BUTTON_LEFT, te.getDeltaX(), localTPF);
-                    processValueInput(ValueType.Y_AXIS_DRAG, MouseInput.BUTTON_LEFT, te.getDeltaY(), localTPF);
-                }
-                break;
-            case SCALE_MOVE:
-                processValueInput(ValueType.PINCH, te.getPointerId(), te.getDeltaScaleSpan(), localTPF);
-            default:
-                break;
+//        logger.log(Level.INFO, "onTouchEvent pointerId: {0}, type: {1}, x: {2}, y: {3}, scale: {4}, dx: {5}, dy: {6}, dScale: {7}",
+//                new Object[]{te.getPointerId(), te.getType(), te.getX(), te.getY(), te.getScaleSpan(), te.getDeltaX(), te.getDeltaY(), te.getDeltaScaleSpan()});
+        boolean consumed = processInputAction(te, localTPF);
+        if (consumed) {
+            te.setConsumed();
         }
     }
 

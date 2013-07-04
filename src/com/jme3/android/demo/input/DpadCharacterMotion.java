@@ -7,6 +7,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -17,8 +18,7 @@ import java.util.logging.Logger;
  *
  * @author iwgeric
  */
-public class DpadCharacterMotion extends AbstractAppState implements
-        LocationInputListener, ValueInputListener {
+public class DpadCharacterMotion extends AbstractAppState implements InputActionListener {
     private static final Logger logger = Logger.getLogger(DpadCharacterMotion.class.getName());
 
     private AppStateManager stateManager = null;
@@ -89,54 +89,49 @@ public class DpadCharacterMotion extends AbstractAppState implements
         super.cleanup();
     }
 
-    public boolean onValue(ValueType valueType, int pointerId, float value, float tpf) {
+    public boolean onInputAction(TouchEvent event, float tpf) {
         boolean consumed = false;
+        InputHandler.dumpEvent(this.getClass().getName(), event);
         if (isEnabled()) {
-            switch (valueType) {
-                case PINCH:
+            switch (event.getType()) {
+                case SCALE_MOVE:
                     if (this.pointerId != null) {
                         // block zooming while navigating with dpad
                         // still allows x axis and y axis dragging for camera rotation
                         consumed = true;
                     }
                     break;
-                default:
-                    break;
-            }
-        }
-        return consumed;
-    }
-
-    public boolean onLocation(LocationType locationType, int pointerId, float locX, float locY, float tpf) {
-        boolean consumed = false;
-        if (isEnabled()) {
-//            logger.log(Level.INFO, "onLocation for inputType: {0}, pointerId: {1}, x:{2}, y:{3}, tpf: {4}",
-//                    new Object[]{locationType, pointerId, locX, locY, tpf});
-            switch (locationType) {
                 case DOWN:
-                    if (this.pointerId == null && checkSelect(locX, locY)) {
-                        this.pointerId = pointerId;
-                        processMotionRequest(true, locX, locY, tpf);
+                    if (this.pointerId == null && checkSelect(event.getX(), event.getY())) {
+                        this.pointerId = event.getPointerId();
+                        processMotionRequest(true, event.getX(), event.getY(), tpf);
                         consumed = true;
                     }
                     break;
                 case UP:
-                    if (this.pointerId != null && this.pointerId == pointerId) {
-                        processMotionRequest(false, locX, locY, tpf);
+                    if (this.pointerId != null && this.pointerId == event.getPointerId()) {
+                        processMotionRequest(false, event.getX(), event.getY(), tpf);
                         this.pointerId = null;
                         consumed = true;
                     }
                     break;
                 case MOVE:
-                    if (this.pointerId != null && this.pointerId == pointerId) {
-                        processMotionRequest(true, locX, locY, tpf);
+                    if (this.pointerId != null && this.pointerId == event.getPointerId()) {
+                        processMotionRequest(true, event.getX(), event.getY(), tpf);
+                        consumed = true;
+                    }
+                    break;
+                case TAP:
+                    if (checkSelect(event.getX(), event.getY())) {
+                        // block if tap occurred over dpad
                         consumed = true;
                     }
                     break;
                 default:
-                    consumed = false;
+                    break;
             }
         }
+
         return consumed;
     }
 

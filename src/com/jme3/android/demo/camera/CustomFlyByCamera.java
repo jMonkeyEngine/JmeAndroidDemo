@@ -1,50 +1,56 @@
 package com.jme3.android.demo.camera;
 
 import com.jme3.input.FlyByCamera;
-import com.jme3.input.InputManager;
-import com.jme3.input.Joystick;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.renderer.Camera;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
  * @author iwgeric
  */
-public class CustomFlyByCamera extends FlyByCamera {
+public class CustomFlyByCamera extends FlyByCamera implements DemoCamera {
     private static final Logger logger = Logger.getLogger(CustomFlyByCamera.class.getName());
 
-    public CustomFlyByCamera(Camera cam, InputManager inputManager){
+    public CustomFlyByCamera(Camera cam){
         super(cam);
-        inputManager.addMapping("FLYCAM_ZoomIn", new KeyTrigger(KeyInput.KEY_EQUALS));
-        inputManager.addMapping("FLYCAM_ZoomOut", new KeyTrigger(KeyInput.KEY_MINUS));
     }
 
-    @Override
-    protected void mapJoystick( Joystick joystick ) {
-        /*
-        leave empty to remove android orientation
-        sensors from controling the camera
-        */
+    public void enableRotation(boolean enable) {
+        if (!enabled) {
+            return;
+        }
+        canRotate = enable;
     }
 
-    @Override
-    public void onAction(String name, boolean value, float tpf) {
-//        logger.log(Level.INFO, "onAction name: {0}, value: {1}, tpf: {2}, enabled: {3}",
-//                new Object[]{name, value, tpf, isEnabled()});
-        super.onAction(name, value, tpf);
+    public void hRotate(float value) {
+        if (enabled) {
+           rotateCamera(value, initialUpVec);
+        }
     }
 
-    @Override
-    public void onAnalog(String name, float value, float tpf) {
-//        logger.log(Level.INFO, "onAnalog name: {0}, value: {1}, tpf: {2}, enabled: {3}",
-//                new Object[]{name, value, tpf, isEnabled()});
-        super.onAnalog(name, value, tpf);
-//        logger.log(Level.INFO, "cam location: {0}, direction: {1}",
-//                new Object[]{cam.getLocation(), cam.getDirection()});
+    public void vRotate(float value) {
+        if (enabled) {
+            rotateCamera(-value * (invertY ? -1 : 1), cam.getLeft());
+        }
+    }
 
+    public void zoom(float value) {
+        if (enabled) {
+            zoomCamera(value);
+        }
+    }
+
+    public void pan(float value, boolean sideways) {
+        if (enabled) {
+            moveCamera(value, sideways);
+            if (!sideways) {
+                riseCamera(value);
+            }
+        }
+    }
+
+    public boolean supportsPan() {
+        return true;
     }
 
 }

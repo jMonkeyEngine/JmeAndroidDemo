@@ -1,43 +1,41 @@
 package com.jme3.android.demo.camera;
 
-import com.jme3.android.demo.input.LocationInputListener;
-import com.jme3.android.demo.input.ValueInputListener;
+import com.jme3.android.demo.input.InputActionListener;
+import com.jme3.android.demo.input.InputHandler;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.CameraNode;
-import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import java.util.logging.Logger;
 
-public class CameraHandler implements LocationInputListener, ValueInputListener {
+public class CameraHandler implements InputActionListener {
     private static final Logger logger = Logger.getLogger(CameraHandler.class.getName());
 
     public enum CameraMode {
         CHASE,
-//        NODE,
-//        FIXEDAXIS,
-//        FLYCAM
+        FLYCAM
     }
     private CameraMode camMode = CameraMode.CHASE;
     private Camera cam = null;
     private DemoCamera activeCamera;
-    private Node node = null;
+    private Spatial target = null;
     private Vector3f lookAtOffset = new Vector3f();
-    private CameraNode nodeCam = null;
-    private Node fixedAxisCamNode = null;
     private CustomFlyByCamera customFlyCam = null;
     private CustomChaseCamera customChaseCam = null;
-    private float moveSpeed = 1f;
+    private float moveSpeed = 10f;
     private float rotateSpeed = 1f;
-    private float zoomSpeed = 1f;
+    private float zoomSpeed = 5f;
+    private boolean panMode = false;
+    private Integer pointerId = null;
 
     public CameraHandler(Camera cam) {
         this.cam = cam;
     }
 
-    public void setCameraMode(CameraMode cameraMode, Node node) {
+    public void setCameraMode(CameraMode cameraMode, Spatial target) {
         this.camMode = cameraMode;
-        this.node = node;
+        this.target = target;
     }
 
     public CameraMode getCameraMode() {
@@ -76,20 +74,8 @@ public class CameraHandler implements LocationInputListener, ValueInputListener 
     }
 
     public void setEnable(boolean enable) {
-        switch (camMode) {
-            case CHASE:
-                customChaseCam.setEnabled(enable);
-                break;
-//            case FIXEDAXIS:
-//                break;
-//            case FLYCAM:
-//                customFlyCam.setEnabled(enable);
-//                break;
-//            case NODE:
-//                nodeCam.setEnabled(enable);
-//                break;
-            default:
-                break;
+        if (activeCamera != null) {
+            activeCamera.setEnabled(enable);
         }
     }
 
@@ -97,7 +83,7 @@ public class CameraHandler implements LocationInputListener, ValueInputListener 
     public void init() {
         switch (camMode) {
             case CHASE:
-                customChaseCam = new CustomChaseCamera(cam, node);
+                customChaseCam = new CustomChaseCamera(cam, target);
                 customChaseCam.setLookAtOffset(lookAtOffset);
                 //customChaseCam.setDragToRotate(true);
                 customChaseCam.setDefaultDistance(10f);
@@ -117,62 +103,17 @@ public class CameraHandler implements LocationInputListener, ValueInputListener 
                 activeCamera = customChaseCam;
                 break;
 
-//            case NODE:
-//                //create the camera Node
-//                nodeCam = new CameraNode("Camera Node", cam);
-//                //This mode means that camera copies the movements of the target:
-//                nodeCam.setControlDir(ControlDirection.SpatialToCamera);
-//                //Attach the camNode to the target:
-//                node.attachChild(nodeCam);
-//                //Move camNode
-//                nodeCam.setLocalTranslation(new Vector3f(0f, 5f, -10f));
-//                //Rotate the camNode to look at the target:
-//                nodeCam.lookAt(node.getLocalTranslation().add(lookAtOffset), Vector3f.UNIT_Y);
-////                nodeCam.lookAt(lookAt.add(lookAtOffset), Vector3f.UNIT_Y);
-//
-//                activeCamera = nodeCam;
-//                break;
-//
-//            case FIXEDAXIS:
-//                //create the camera Node
-//                fixedAxisCamNode = new Node("Fixed Axis Camera Node");
-//
-//                //create and configure the control
-//                FixedAxisCamera control = new FixedAxisCamera(cam);
-////                control.setLocationOffset(new Vector3f(0f, 35f, 35f));
-//                control.setLocationOffset(new Vector3f(0f, 3f, -7f));
-//                control.setLookAtOffset(Vector3f.ZERO);
-////                control.setMinWorldHeight(35f);
-////                control.setMinWorldHeight(-9999f);
-//                control.setMinWorldHeight(2.5f);
-//                control.setAllowedRotationAxes(new Vector3f(0f, 1f, 0f));
-//
-//                //attach the control to the new node
-//                fixedAxisCamNode.addControl(control);
-//
-//                //Attach the camNode to the target:
-//                node.attachChild(fixedAxisCamNode);
-//
-//                activeCamera = fixedAxisCamNode;
-//                break;
-//
-//            case FLYCAM:
-//                logger.log(Level.INFO, "Creating new CustomFlyCam");
-//                FlyCamAppState flyCamState = app.getStateManager().getState(FlyCamAppState.class);
-//                if (flyCamState != null) {
-//                    app.getStateManager().detach(flyCamState);
-//                }
-//                customFlyCam = new CustomFlyByCamera(cam, inputManager);
-//                customFlyCam.setDragToRotate(true);
-//                customFlyCam.setMoveSpeed(moveSpeed);
-//                customFlyCam.setRotationSpeed(rotateSpeed);
-//                customFlyCam.setZoomSpeed(zoomSpeed);
-//                customFlyCam.registerWithInput(inputManager);
-//                cam.setLocation(new Vector3f(62f, 32f, 6f));
-//                cam.lookAtDirection(new Vector3f(-1f, -0.5f, 0f), Vector3f.UNIT_Y);
-//
-//                activeCamera = customFlyCam;
-//                break;
+            case FLYCAM:
+                customFlyCam = new CustomFlyByCamera(cam);
+                customFlyCam.setDragToRotate(true);
+                customFlyCam.setMoveSpeed(moveSpeed);
+                customFlyCam.setRotationSpeed(rotateSpeed);
+                customFlyCam.setZoomSpeed(zoomSpeed*5);
+                cam.setLocation(target.getWorldTranslation().add(0f, 10f, -10f));
+                cam.lookAtDirection(target.getWorldTranslation().subtract(cam.getLocation()), Vector3f.UNIT_Y);
+
+                activeCamera = customFlyCam;
+                break;
 
             default:
                 break;
@@ -180,45 +121,47 @@ public class CameraHandler implements LocationInputListener, ValueInputListener 
 
     }
 
-    public boolean onLocation(LocationType locationType, int pointerId, float locX, float locY, float tpf) {
+    public boolean onInputAction(TouchEvent event, float tpf) {
+        InputHandler.dumpEvent(this.getClass().getName(), event);
         boolean consumed = false;
-        switch (locationType) {
+        switch (event.getType()) {
             case DOWN:
-                if (activeCamera != null) {
+                if (activeCamera != null && this.pointerId == null) {
                     activeCamera.enableRotation(true);
+                    this.pointerId = event.getPointerId();
                     consumed = true;
                 }
                 break;
             case UP:
-                if (activeCamera != null) {
+                if (activeCamera != null && this.pointerId != null && this.pointerId == event.getPointerId()) {
                     activeCamera.enableRotation(false);
+                    panMode = false;
+                    this.pointerId = null;
                     consumed = true;
                 }
                 break;
-            default:
-                break;
-        }
-        return consumed;
-    }
-
-    public boolean onValue(ValueType valueType, int pointerId, float value, float tpf) {
-        boolean consumed = false;
-        switch (valueType) {
-            case X_AXIS_DRAG:
-                if (activeCamera != null) {
-                    activeCamera.hRotate(value/1024);
+            case TAP:
+                if (activeCamera != null && (this.pointerId == null || this.pointerId == event.getPointerId())) {
+                    if (activeCamera.supportsPan()) {
+                        panMode = true;
+                        consumed = true;
+                    }
+                }
+            case MOVE:
+                if (activeCamera != null && this.pointerId != null && this.pointerId == event.getPointerId()) {
+                    if (panMode) {
+                        activeCamera.pan(event.getDeltaX()/1024, true);
+                        activeCamera.pan(event.getDeltaY()/1024, false);
+                    } else {
+                        activeCamera.hRotate(event.getDeltaX()/1024);
+                        activeCamera.vRotate(event.getDeltaY()/1024);
+                    }
                     consumed = true;
                 }
                 break;
-            case Y_AXIS_DRAG:
+            case SCALE_MOVE:
                 if (activeCamera != null) {
-                    activeCamera.vRotate(value/1024);
-                    consumed = true;
-                }
-                break;
-            case PINCH:
-                if (activeCamera != null) {
-                    activeCamera.zoom(value/1024);
+                    activeCamera.zoom(event.getDeltaScaleSpan()/1024);
                     consumed = true;
                 }
                 break;

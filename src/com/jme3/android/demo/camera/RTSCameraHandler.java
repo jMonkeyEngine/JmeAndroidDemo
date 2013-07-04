@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.jme3.android.demo.input;
+package com.jme3.android.demo.camera;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.input.InputManager;
@@ -110,7 +110,7 @@ public class RTSCameraHandler extends AbstractControl implements ActionListener,
                 camera.setLocation(cameraNode.getWorldTranslation());
                 camera.setRotation(cameraNode.getWorldRotation());
             }
-            // 
+            //
 
             //  logger.warning("rotation x : " + ghostTarget.getWorldRotation().toAngleAxis(Vector3f.UNIT_X));
             camera.lookAt(targetActualPosition, Vector3f.UNIT_Y);

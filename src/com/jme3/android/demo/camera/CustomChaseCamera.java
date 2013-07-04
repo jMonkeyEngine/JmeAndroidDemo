@@ -50,5 +50,12 @@ public class CustomChaseCamera extends ChaseCamera implements DemoCamera {
         }
     }
 
+    public void pan(float value, boolean sideways) {
+        // do nothing for chase cam
+    }
+
+    public boolean supportsPan() {
+        return false;
+    }
 
 }
