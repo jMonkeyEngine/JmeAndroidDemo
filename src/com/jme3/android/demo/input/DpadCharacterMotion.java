@@ -8,8 +8,10 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
 import java.util.logging.Logger;
@@ -33,7 +35,14 @@ public class DpadCharacterMotion extends AbstractAppState implements InputAction
     private Node dpadNode = new Node("dpad");
     private SelectablePicture dpadPicture = null;
     private BetterCharacterControl characterControl = null;
-    private float maxVelocity = 1f;
+    private Vector3f maxVelocity = new Vector3f(1f, 0f, 1f);
+
+    private boolean useCameraRotation = false;
+    private Camera camera = null;
+    private float[] camAngles = new float[3];
+    Quaternion levelCamRotation = new Quaternion();
+    private Vector3f dpadVector = new Vector3f();
+    private Vector3f walkDirection = new Vector3f();
 
     public void setCharacterControl(BetterCharacterControl characterControl) {
         this.characterControl = characterControl;
@@ -50,6 +59,13 @@ public class DpadCharacterMotion extends AbstractAppState implements InputAction
         setEnabled(true);
     }
 
+    public void setUseCameraRotation(boolean useCameraRotation) {
+        this.useCameraRotation = useCameraRotation;
+    }
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         this.stateManager = stateManager;
@@ -60,6 +76,9 @@ public class DpadCharacterMotion extends AbstractAppState implements InputAction
         this.appSettings = app.getContext().getSettings();
 
         initDpad();
+        if (camera == null) {
+            camera = this.app.getViewPort().getCamera();
+        }
 
         super.initialize(stateManager, app);
     }
@@ -82,6 +101,24 @@ public class DpadCharacterMotion extends AbstractAppState implements InputAction
     @Override
     public void update(float tpf) {
         super.update(tpf);
+
+        Vector3f rotatedDpadVector = new Vector3f(dpadVector);
+
+        if (useCameraRotation && camera == null) {
+            throw new IllegalStateException("Camera is null with useCameraRotion");
+        } else if (useCameraRotation) {
+            // create a quat level with the ground
+            camera.getRotation().toAngles(camAngles);
+            camAngles[0] = 0f;
+            levelCamRotation.fromAngles(camAngles).normalizeLocal();
+            // rotate dpad based on camera rotation level with the ground
+            levelCamRotation.multLocal(rotatedDpadVector);
+        }
+        walkDirection.set(maxVelocity.mult(rotatedDpadVector));
+        characterControl.setWalkDirection(walkDirection);
+        if (walkDirection.lengthSquared() > 0) {
+            characterControl.setViewDirection(walkDirection);
+        }
     }
 
     @Override
@@ -151,13 +188,9 @@ public class DpadCharacterMotion extends AbstractAppState implements InputAction
 //            logger.log(Level.INFO, "dpad ratio: {0}", locationRatio.toString());
             if (characterControl != null) {
                 if (active) {
-                    Vector3f walk = new Vector3f(maxVelocity,0,maxVelocity);
-                    walk.z *= locationRatio.y;
-                    walk.x *= -locationRatio.x;
-                    characterControl.setWalkDirection(walk);
-                    characterControl.setViewDirection(walk);
+                    dpadVector.set(-locationRatio.x, 0f, locationRatio.y);
                 } else {
-                    characterControl.setWalkDirection(Vector3f.ZERO);
+                    dpadVector.set(Vector3f.ZERO);
                 }
             }
         }

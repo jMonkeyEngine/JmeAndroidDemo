@@ -52,8 +52,10 @@ public class Main extends SimpleApplication implements InputActionListener {
         bulletAppState.getPhysicsSpace().add(jaime.getCharPhysicsControl());
 
         DpadCharacterMotion dpadCharacterMotion = new DpadCharacterMotion();
-        stateManager.attach(dpadCharacterMotion);
         dpadCharacterMotion.setCharacterControl(jaime.getCharPhysicsControl());
+        dpadCharacterMotion.setCamera(cam);
+        dpadCharacterMotion.setUseCameraRotation(true);
+        stateManager.attach(dpadCharacterMotion);
 
         CameraHandler cameraHandler = new CameraHandler(cam);
         cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE, jaime.getModel());
