@@ -95,6 +95,7 @@ public class InputHandler extends AbstractAppState implements RawInputListener {
         boolean consumed = false;
         if (inputActionListeners != null) {
             for (InputActionListener listener: inputActionListeners) {
+//                logger.log(Level.INFO, "calling onInputAction in: {0}", listener.getClass().getName());
                 consumed = listener.onInputAction(event, tpf);
                 if (consumed) {
 //                    logger.log(Level.INFO, "consumed by: {0}", listener.getClass().getName());

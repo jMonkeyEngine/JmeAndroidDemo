@@ -4,7 +4,7 @@ import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.DpadCharacterMotion;
 import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.android.demo.input.InputHandler;
-import com.jme3.android.demo.system.CharacterHandler;
+import com.jme3.android.demo.input.NavMeshCharacterMotion;
 import com.jme3.android.demo.system.SceneAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
@@ -21,6 +21,9 @@ public class Main extends SimpleApplication implements InputActionListener {
     private boolean stats = true;
     private SceneAppState sceneAppState;
     private BulletAppState bulletAppState = new BulletAppState();
+    private InputHandler inputHandler = new InputHandler();
+    private CameraHandler cameraHandler = new CameraHandler();
+
     private float totalTime = 0f;
 
     public static void main(String[] args) {
@@ -36,32 +39,38 @@ public class Main extends SimpleApplication implements InputActionListener {
         return bulletAppState;
     }
 
+    public InputHandler getInputHandler() {
+        return inputHandler;
+    }
+
+    public CameraHandler getCameraHandler() {
+        return cameraHandler;
+    }
+
     @Override
     public void simpleInitApp() {
-       // flyCam.setMoveSpeed(50);
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
 
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
 
+        // sceneAppState attached first to make sure initialize runs before
+        //    other app state initialize methods
         sceneAppState = new SceneAppState();
         stateManager.attach(sceneAppState);
 
-        CharacterHandler jaime = new CharacterHandler(assetManager, "Models/Jaime/JaimeOptimized.j3o");
-        sceneAppState.addMainCharacter(jaime);
-        bulletAppState.getPhysicsSpace().add(jaime.getCharPhysicsControl());
-
         DpadCharacterMotion dpadCharacterMotion = new DpadCharacterMotion();
-        dpadCharacterMotion.setCharacterControl(jaime.getCharPhysicsControl());
         dpadCharacterMotion.setCamera(cam);
         dpadCharacterMotion.setUseCameraRotation(true);
         stateManager.attach(dpadCharacterMotion);
 
-        CameraHandler cameraHandler = new CameraHandler(cam);
-        cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE, jaime.getModel());
-        cameraHandler.init();
+        NavMeshCharacterMotion navMeshCharacterMotion = new NavMeshCharacterMotion();
+        stateManager.attach(navMeshCharacterMotion);
 
-        InputHandler inputHandler = new InputHandler();
+
+        cameraHandler.setCamera(cam);
+        cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE);
+
         // Kept assigning input listener in Main to control the order.
         // inputs are sent to the classes based on order added
         // each input class can consume the input to prevent remaining classes
@@ -69,6 +78,7 @@ public class Main extends SimpleApplication implements InputActionListener {
 
         /* character motion always has first priority over input events */
         inputHandler.addInputActionListener(dpadCharacterMotion);
+        inputHandler.addInputActionListener(navMeshCharacterMotion);
 
         // TODO: Add sceneAppState input listener here when ready to be able to detect
         // object picking in the scene before the events get sent to the camera class
@@ -77,6 +87,8 @@ public class Main extends SimpleApplication implements InputActionListener {
 
         /* camera control should always be last to collect events not handled elsewhere */
         inputHandler.addInputActionListener(cameraHandler);
+
+        // attach inputHandler last so that all the other appstates get initialized first
         stateManager.attach(inputHandler);
 
     }

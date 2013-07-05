@@ -29,7 +29,17 @@ public class CameraHandler implements InputActionListener {
     private boolean panMode = false;
     private Integer pointerId = null;
 
+    /**
+     * Using this constructor you must call setCamera() before init()
+     */
+    public CameraHandler() {
+    }
+
     public CameraHandler(Camera cam) {
+        this.cam = cam;
+    }
+
+    public void setCamera(Camera cam) {
         this.cam = cam;
     }
 
@@ -38,12 +48,20 @@ public class CameraHandler implements InputActionListener {
         this.target = target;
     }
 
+    public void setCameraMode(CameraMode cameraMode) {
+        this.camMode = cameraMode;
+    }
+
     public CameraMode getCameraMode() {
         return camMode;
     }
 
     public Camera getCamera() {
         return cam;
+    }
+
+    public void setTarget(Spatial target) {
+        this.target = target;
     }
 
     public void setLookAtOffset(Vector3f lookAtOffset) {
@@ -92,7 +110,7 @@ public class CameraHandler implements InputActionListener {
                 customChaseCam.setDefaultVerticalRotation(FastMath.QUARTER_PI);
                 customChaseCam.setMaxVerticalRotation(FastMath.HALF_PI - 0.1f);
                 customChaseCam.setMinVerticalRotation(0f);
-                customChaseCam.setDefaultHorizontalRotation(-FastMath.HALF_PI);
+                customChaseCam.setDefaultHorizontalRotation(FastMath.HALF_PI);
                 customChaseCam.setSmoothMotion(false);
                 customChaseCam.setRotationSensitivity(3f);
                 customChaseCam.setUpVector(Vector3f.UNIT_Y);
