@@ -26,3 +26,6 @@ xmlpull-xpp3.jar<br/>
 native-bullet/jME3-bullet-natives.jar<br/>
 native-bullet/jME3-bullet.jar<br/>
 native-openal-soft/jME3-openal-soft-natives-android.jar<br/>
+
+If using the jMonkeyEngine SDK, Install the "jME3 AI Library".<br/>
+This plug-in provides the jME3-AI.jar file used in the project.<br/>
