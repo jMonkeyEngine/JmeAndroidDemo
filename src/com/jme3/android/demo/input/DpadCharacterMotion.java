@@ -57,8 +57,10 @@ public class DpadCharacterMotion extends AbstractAppState implements
     private void initDpad() {
         dpadPicture = new SelectablePicture("Dpad", false);
         dpadPicture.setImage(assetManager, "Interface/Dpad.png", true);
-        dpadPicture.setWidth(256f);
-        dpadPicture.setHeight(256f);
+        float width = Math.min(appSettings.getWidth() * 0.5f, appSettings.getHeight() * 0.5f);
+        float height = width;
+        dpadPicture.setWidth(width);
+        dpadPicture.setHeight(height);
         dpadNode.attachChild(dpadPicture);
         dpadNode.setLocalTranslation(0, 0, 0);
         pointerId = null;
