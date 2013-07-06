@@ -2,14 +2,18 @@ package com.jme3.android.demo.system;
 
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.camera.CameraHandler;
+import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.input.event.TouchEvent;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -19,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Nehon / iwgeric
  */
-public class SceneAppState extends AbstractAppState {
+public class SceneAppState extends AbstractAppState implements InputActionListener {
     private static final Logger logger = Logger.getLogger(SceneAppState.class.getName());
 
     private Main app;
@@ -33,6 +37,7 @@ public class SceneAppState extends AbstractAppState {
     private Spatial navMeshTargetMarker;
     private CameraHandler cameraHandler;
     private Node groundNode;
+    private Node sceneDynamicObjects;
 
     public SceneAppState() {
     }
@@ -45,16 +50,15 @@ public class SceneAppState extends AbstractAppState {
         this.bulletAppState = this.app.getBulletAppState();
 
         loadScene();
-        this.rootNode.attachChild(worldNode);
-
-        cameraHandler = this.app.getCameraHandler();
-        cameraHandler.setTarget(mainCharacter.getModel());
-        cameraHandler.init();
+        initCamera();
 
         super.initialize(stateManager, app);
     }
 
     private void loadScene(){
+        if (worldNode != null) {
+            worldNode.removeFromParent();
+        }
         worldNode = (Node)assetManager.loadModel("Scenes/World1.j3o");
 
         Node mainCharacterNode = (Node)worldNode.getChild("Jaime");
@@ -75,6 +79,22 @@ public class SceneAppState extends AbstractAppState {
         navMeshTargetMarker = worldNode.getChild("NavMeshTargetMarker");
         groundNode = (Node)worldNode.getChild("Ground");
 
+        sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
+        Spatial box = sceneDynamicObjects.getChild("Cube1");
+
+        BoundingBox bb = (BoundingBox)box.getWorldBound();
+        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
+        RigidBodyControl phyBox = new RigidBodyControl(colBox, 5f);
+        box.addControl(phyBox);
+        bulletAppState.getPhysicsSpace().add(phyBox);
+
+        this.rootNode.attachChild(worldNode);
+    }
+
+    private void initCamera() {
+        cameraHandler = this.app.getCameraHandler();
+        cameraHandler.setTarget(mainCharacter.getModel());
+        cameraHandler.init();
     }
 
     public Node getWorldNode() {
@@ -101,6 +121,10 @@ public class SceneAppState extends AbstractAppState {
         return navMeshTargetMarker;
     }
 
+    public Node getSceneDynamicObjects() {
+        return sceneDynamicObjects;
+    }
+
     @Override
     public void update(float tpf) {
     }
@@ -116,6 +140,10 @@ public class SceneAppState extends AbstractAppState {
             bulletAppState.setEnabled(enabled);
         }
         super.setEnabled(enabled);
+    }
+
+    public boolean onInputAction(TouchEvent event, float tpf) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

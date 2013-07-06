@@ -1,0 +1,52 @@
+<scene formatVersion="1.0.1" previous_export_time="0" exported_by="potterec" export_time="1373069775.503293" >
+  <nodes >
+    <node name="Cube" >
+      <position z="-0.000000" y="0.000000" x="0.000000" />
+      <rotation qy="0.000000" qx="0.000000" qz="-0.000000" qw="1.000000" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <entity actor="False" mass_radius="1.0" lock_rot_x="False" anisotropic_friction="False" physics_type="STATIC" friction_x="1.0" friction_y="1.0" damping_rot="0.1589999943971634" lock_rot_z="False" friction_z="1.0" damping_trans="0.02539999969303608" velocity_min="0.0" mass="1.0" lock_trans_z="False" lock_trans_y="False" lock_trans_x="False" lock_rot_y="False" inertia_tensor="0.4000000059604645" velocity_max="0.0" ghost="False" meshFile="Cube.mesh" name="Cube" />
+    </node>
+    <node name="Lamp" >
+      <position z="-1.005454" y="5.903862" x="4.076245" />
+      <rotation qy="0.755880" qx="0.169076" qz="-0.272171" qw="0.570947" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <light type="point" name="Lamp" shadow="true" powerScale="1.0" >
+        <position z="-1.005454" y="5.903862" x="4.076245" />
+        <lightAttenuation range="5000" constant="1.0" quadratic="0.0" linear="0.03333335240683057" />
+        <colourDiffuse g="1.0" r="1.0" b="1.0" />
+        <colourSpecular g="1.0" r="1.0" b="1.0" />
+        <colourShadow g="1.0" r="1.0" b="1.0" />
+      </light>
+    </node>
+    <node name="Camera" >
+      <position z="6.507640" y="5.343665" x="7.481132" />
+      <rotation qy="0.334251" qx="0.481707" qz="-0.212922" qw="0.781600" />
+      <scale z="1.000000" y="1.000000" x="1.000000" />
+      <game >
+        <sensors />
+        <actuators />
+      </game>
+      <camera fov="0.5033799435163735" name="Camera" projectionType="perspective" >
+        <clipping nearPlaneDist="0.10000000149011612" far="100.0" near="0.10000000149011612" farPlaneDist="100.0" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="D:\Users\potterec\Documents\jME\jME_Projects\JmeAndroidDemo\assets\Models\JME_Box\Material.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourBackground g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+    <colourDiffuse g="0.05087608844041824" r="0.05087608844041824" b="0.05087608844041824" />
+    <colourAmbient g="0.0" r="0.0" b="0.0" />
+  </environment>
+</scene>
