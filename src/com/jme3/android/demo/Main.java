@@ -76,14 +76,17 @@ public class Main extends SimpleApplication implements InputActionListener {
         // each input class can consume the input to prevent remaining classes
         // from getting the input event
 
-        /* character motion always has first priority over input events */
+        /* dpad character motion always has first priority over input events */
         inputHandler.addInputActionListener(dpadCharacterMotion);
-        inputHandler.addInputActionListener(navMeshCharacterMotion);
 
-        // TODO: Add sceneAppState input listener here when ready to be able to detect
-        // object picking in the scene before the events get sent to the camera class
+        // sceneAppState allows for selecting dynamic objects in the scene
+        inputHandler.addInputActionListener(sceneAppState);
 
         inputHandler.addInputActionListener(this);
+
+        // NavMesh navigation should be after sceneAppState to allow for object
+        //   picking to take priority over moving the character to a new location
+        inputHandler.addInputActionListener(navMeshCharacterMotion);
 
         /* camera control should always be last to collect events not handled elsewhere */
         inputHandler.addInputActionListener(cameraHandler);

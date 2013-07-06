@@ -3,6 +3,8 @@ package com.jme3.android.demo.system;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.InputActionListener;
+import com.jme3.android.demo.utils.MousePicker;
+import com.jme3.android.demo.utils.PhysicsHelpers;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -11,12 +13,15 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -80,7 +85,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         groundNode = (Node)worldNode.getChild("Ground");
 
         sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
-        Spatial box = sceneDynamicObjects.getChild("Cube1");
+        Spatial box = sceneDynamicObjects.getChild("jME_Box");
 
         BoundingBox bb = (BoundingBox)box.getWorldBound();
         BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
@@ -143,7 +148,41 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
     }
 
     public boolean onInputAction(TouchEvent event, float tpf) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        boolean consumed = false;
+
+        if (!isEnabled()) {
+            return false;
+        }
+
+        switch (event.getType()) {
+            case TAP:
+                Geometry geometry = MousePicker.getClosestFilteredGeometry(
+                        worldNode, sceneDynamicObjects, app.getCamera(),
+                        event.getX(), event.getY());
+
+                if (geometry != null) {
+                    logger.log(Level.INFO, "Dynamic Object Selected: {0}", geometry.getName());
+                    PhysicsControl physicsControl = PhysicsHelpers.getPhysicsControl(geometry);
+                    if (physicsControl != null) {
+                        logger.log(Level.INFO, "PhysicsControl found: {0}", physicsControl.getClass().getName());
+                        if (physicsControl instanceof RigidBodyControl) {
+                            RigidBodyControl rigidBodyControl = (RigidBodyControl)physicsControl;
+                            Vector3f force = rigidBodyControl.getGravity().negate().mult(rigidBodyControl.getMass());
+                            force.multLocal(0.5f);
+                            logger.log(Level.INFO, "gravity: {0}, mass: {1}, force: {2}",
+                                    new Object[]{rigidBodyControl.getGravity(), rigidBodyControl.getMass(), force});
+                            ((RigidBodyControl)physicsControl).applyImpulse(force, Vector3f.ZERO);
+                        }
+                    } else {
+                        logger.log(Level.INFO, "Geometry and all parents do not have a PhysicsControl");
+                    }
+                    consumed = true;
+                }
+                break;
+            default:
+                break;
+        }
+        return consumed;
     }
 
 }
