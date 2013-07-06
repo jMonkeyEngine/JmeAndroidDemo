@@ -87,9 +87,12 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
         Spatial box = sceneDynamicObjects.getChild("jME_Box");
 
-        BoundingBox bb = (BoundingBox)box.getWorldBound();
-        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
-        RigidBodyControl phyBox = new RigidBodyControl(colBox, 5f);
+//        BoundingBox bb = (BoundingBox)box.getWorldBound();
+//        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
+//        RigidBodyControl phyBox = new RigidBodyControl(colBox, 5f);
+
+        RigidBodyControl phyBox = new RigidBodyControl(5f);
+
         box.addControl(phyBox);
         bulletAppState.getPhysicsSpace().add(phyBox);
 
@@ -164,19 +167,19 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
                     logger.log(Level.INFO, "Dynamic Object Selected: {0}", geometry.getName());
                     PhysicsControl physicsControl = PhysicsHelpers.getPhysicsControl(geometry);
                     if (physicsControl != null) {
-                        logger.log(Level.INFO, "PhysicsControl found: {0}", physicsControl.getClass().getName());
+//                        logger.log(Level.INFO, "PhysicsControl found: {0}", physicsControl.getClass().getName());
                         if (physicsControl instanceof RigidBodyControl) {
                             RigidBodyControl rigidBodyControl = (RigidBodyControl)physicsControl;
                             Vector3f force = rigidBodyControl.getGravity().negate().mult(rigidBodyControl.getMass());
                             force.multLocal(0.5f);
-                            logger.log(Level.INFO, "gravity: {0}, mass: {1}, force: {2}",
-                                    new Object[]{rigidBodyControl.getGravity(), rigidBodyControl.getMass(), force});
+//                            logger.log(Level.INFO, "gravity: {0}, mass: {1}, force: {2}",
+//                                    new Object[]{rigidBodyControl.getGravity(), rigidBodyControl.getMass(), force});
                             ((RigidBodyControl)physicsControl).applyImpulse(force, Vector3f.ZERO);
+                            consumed = true;
                         }
                     } else {
                         logger.log(Level.INFO, "Geometry and all parents do not have a PhysicsControl");
                     }
-                    consumed = true;
                 }
                 break;
             default:

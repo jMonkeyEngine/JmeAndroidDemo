@@ -70,14 +70,14 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
     }
 
     private void computeNav(Vector3f startLocation, Vector3f targetLocation) {
-        logger.log(Level.INFO, "Starting Path Finder");
-        logger.log(Level.INFO, "Starting Position: {0}, Target Position: {1}",
-                new Object[]{startLocation, targetLocation});
+//        logger.log(Level.INFO, "Starting Path Finder");
+//        logger.log(Level.INFO, "Starting Position: {0}, Target Position: {1}",
+//                new Object[]{startLocation, targetLocation});
 
         navMeshPathFinder.setPosition(startLocation);
         navMeshPathFinder.computePath(targetLocation, navMeshDebugInfo);
 
-        logger.log(Level.INFO, "Finish Path Finder");
+//        logger.log(Level.INFO, "Finish Path Finder");
     }
 
     @Override
@@ -152,7 +152,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
 //        logger.log(Level.INFO, "WalkDirection: {0}", walkDirection);
         characterControl.setWalkDirection(walkDirection);
         if (walkDirection.lengthSquared() > 0) {
-            logger.log(Level.INFO, "Setting WalkDirection: {0}", walkDirection);
+//            logger.log(Level.INFO, "Setting WalkDirection: {0}", walkDirection);
             characterControl.setViewDirection(walkDirection);
         }
     }

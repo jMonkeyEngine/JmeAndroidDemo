@@ -24,7 +24,7 @@ public class PhysicsHelpers {
             }
         }
 
-        logger.log(Level.INFO, "PhysicsControl found on: {0}", spatial);
+//        logger.log(Level.INFO, "PhysicsControl found on: {0}", spatial);
         return physicsControl;
     }
 }
