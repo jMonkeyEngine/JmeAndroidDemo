@@ -7,6 +7,7 @@ import com.jme3.ai.navmesh.Path;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.system.CharacterHandler;
 import com.jme3.android.demo.utils.GeometryUtils;
+import com.jme3.android.demo.utils.MousePicker;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -174,9 +175,9 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
 
         switch (event.getType()) {
             case TAP:
-                Vector3f target = getTargetLocation(
+                Vector3f target = MousePicker.getClosestFilteredContactPoint(
                         app.getSceneAppState().getWorldNode(), app.getSceneAppState().getGroundNode(),
-                        event.getX(), event.getY());
+                        camera, event.getX(), event.getY());
                 if (target != null) {
                     characterHandler.setCharacterMotion(this);
                     computeNav(characterSpatial.getWorldTranslation(), target);
@@ -186,37 +187,6 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
                 break;
         }
         return consumed;
-    }
-
-    private Vector3f getTargetLocation(Spatial allObjects, Spatial targetObjects, float x, float y) {
-        CollisionResults results = new CollisionResults();
-        Vector2f click2d = new Vector2f(x, y);
-        Vector3f click3d = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 0f).clone();
-        Vector3f dir = camera.getWorldCoordinates(
-                new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-        Ray ray = new Ray(click3d, dir);
-        allObjects.collideWith(ray, results);
-
-        if (results.size() > 0) {
-            for (CollisionResult result: results) {
-                logger.log(Level.INFO, "distance: {0}, name: {1}",
-                        new Object[]{result.getDistance(), result.getGeometry().getName()});
-            }
-            CollisionResult closestCollision = results.getClosestCollision();
-            if (targetObjects instanceof Node) {
-                if (((Node)targetObjects).hasChild(closestCollision.getGeometry())) {
-                    return closestCollision.getContactPoint();
-                }
-            } else {
-                if (targetObjects.equals(closestCollision.getGeometry())) {
-                    return closestCollision.getContactPoint();
-                }
-            }
-
-        }
-
-        return null;
     }
 
 }
