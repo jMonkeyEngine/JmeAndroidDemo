@@ -45,7 +45,7 @@ public class MousePicker {
         return null;
     }
 
-    public static Vector3f getContactPoint(Spatial spatialsToCheck, Camera cam, float x, float y) {
+    public static Vector3f getClosestContactPoint(Spatial spatialsToCheck, Camera cam, float x, float y) {
         CollisionResult closestResult = getClosestResult(spatialsToCheck, cam, x, y);
         if (closestResult != null) {
             return closestResult.getContactPoint();
@@ -54,7 +54,7 @@ public class MousePicker {
         return null;
     }
 
-    public static CollisionResult getFilteredClosestResult(Spatial spatialsToCheck, Spatial targetSpatials, Camera cam, float x, float y) {
+    public static CollisionResult getClosestFilteredResult(Spatial spatialsToCheck, Spatial targetSpatials, Camera cam, float x, float y) {
         CollisionResult result = getClosestResult(spatialsToCheck, cam, x, y);
 
         if (result != null) {
@@ -73,8 +73,8 @@ public class MousePicker {
         return null;
     }
 
-    public static Geometry getFilteredClosestGeometry(Spatial spatialsToCheck, Spatial targetSpatials, Camera cam, float x, float y) {
-        CollisionResult result = getClosestResult(spatialsToCheck, cam, x, y);
+    public static Geometry getClosestFilteredGeometry(Spatial spatialsToCheck, Spatial targetSpatials, Camera cam, float x, float y) {
+        CollisionResult result = getClosestFilteredResult(spatialsToCheck, targetSpatials, cam, x, y);
 
         if (result != null) {
             return result.getGeometry();
@@ -84,7 +84,7 @@ public class MousePicker {
     }
 
     public static Vector3f getClosestFilteredContactPoint(Spatial spatialsToCheck, Spatial targetSpatials, Camera cam, float x, float y) {
-        CollisionResult result = getFilteredClosestResult(spatialsToCheck, targetSpatials, cam, x, y);
+        CollisionResult result = getClosestFilteredResult(spatialsToCheck, targetSpatials, cam, x, y);
 
         if (result != null) {
             return result.getContactPoint();
