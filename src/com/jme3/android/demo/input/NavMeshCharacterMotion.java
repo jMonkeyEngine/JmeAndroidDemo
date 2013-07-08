@@ -7,17 +7,14 @@ import com.jme3.ai.navmesh.Path;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.system.CharacterHandler;
 import com.jme3.android.demo.utils.GeometryUtils;
-import com.jme3.android.demo.utils.MousePicker;
+import com.jme3.android.demo.utils.PickingHelpers;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.BetterCharacterControl;
-import com.jme3.collision.CollisionResult;
-import com.jme3.collision.CollisionResults;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -33,7 +30,7 @@ import java.util.logging.Logger;
  */
 public class NavMeshCharacterMotion extends AbstractAppState implements
         InputActionListener, CharacterMotion {
-    private static final Logger logger = Logger.getLogger(DpadCharacterMotion.class.getName());
+    private static final Logger logger = Logger.getLogger(NavMeshCharacterMotion.class.getName());
 
     private AppStateManager stateManager = null;
     private Main app = null;
@@ -48,7 +45,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
     private CharacterHandler characterHandler = null;
     private BetterCharacterControl characterControl = null;
     private Spatial characterSpatial = null;
-    private Vector3f maxVelocity = new Vector3f(1f, 0f, 1f);
+    private Vector3f maxVelocity = new Vector3f(2f, 0f, 2f);
     private Vector3f walkDirection = new Vector3f();
 
     private Geometry geoNavMesh;
@@ -125,6 +122,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         if(wayPoint != null) {
             float distance = navMeshPathFinder.getDistanceToWaypoint();
             Vector3f vector = wayPoint.getPosition().subtract(characterSpatial.getWorldTranslation());
+            vector.y = 0f; // y component not needed and messes up if navmesh has the waypoint a little in the air.
 //            logger.log(Level.INFO, "Distance: {0}, vector: {1}",
 //                    new Object[]{distance, vector});
             if(!(vector.length() < 0.5)){
@@ -169,15 +167,16 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
             return false;
         }
         if (characterHandler.getCharacterMotion() != null && !characterHandler.getCharacterMotion().equals(this)) {
-            logger.log(Level.INFO, "characterMotion: {0}", characterHandler.getCharacterMotion());
+//            logger.log(Level.INFO, "characterMotion: {0}", characterHandler.getCharacterMotion());
             return false;
         }
 
         switch (event.getType()) {
             case TAP:
-                Vector3f target = MousePicker.getClosestFilteredContactPoint(
+                Ray ray = PickingHelpers.getCameraRayForward(camera, event.getX(), event.getY());
+                Vector3f target = PickingHelpers.getClosestFilteredContactPoint(
                         app.getSceneAppState().getWorldNode(), app.getSceneAppState().getGroundNode(),
-                        camera, event.getX(), event.getY());
+                        ray);
                 if (target != null) {
                     characterHandler.setCharacterMotion(this);
                     computeNav(characterSpatial.getWorldTranslation(), target);

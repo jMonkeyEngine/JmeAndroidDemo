@@ -22,6 +22,10 @@ public class CustomFlyByCamera extends FlyByCamera implements DemoCamera {
         canRotate = enable;
     }
 
+    public boolean isRotationEnabled() {
+        return canRotate;
+    }
+
     public void hRotate(float value) {
         if (enabled) {
            rotateCamera(value, initialUpVec);
@@ -51,6 +55,18 @@ public class CustomFlyByCamera extends FlyByCamera implements DemoCamera {
 
     public boolean supportsPan() {
         return true;
+    }
+
+    public void autoRotate(float value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void autoZoom(float value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void resetAutoZoom() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

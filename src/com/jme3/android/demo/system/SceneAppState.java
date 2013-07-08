@@ -3,20 +3,19 @@ package com.jme3.android.demo.system;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.InputActionListener;
-import com.jme3.android.demo.utils.MousePicker;
 import com.jme3.android.demo.utils.PhysicsHelpers;
+import com.jme3.android.demo.utils.PickingHelpers;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
@@ -102,6 +101,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
     private void initCamera() {
         cameraHandler = this.app.getCameraHandler();
         cameraHandler.setTarget(mainCharacter.getModel());
+        cameraHandler.setLookAtOffset(new Vector3f(0f, 0.5f, 0f));
         cameraHandler.init();
     }
 
@@ -135,6 +135,9 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
 
     @Override
     public void update(float tpf) {
+        if (isEnabled()) {
+            cameraHandler.keepTargetVisible(worldNode, tpf);
+        }
     }
 
     @Override
@@ -159,9 +162,9 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
 
         switch (event.getType()) {
             case TAP:
-                Geometry geometry = MousePicker.getClosestFilteredGeometry(
-                        worldNode, sceneDynamicObjects, app.getCamera(),
-                        event.getX(), event.getY());
+                Ray ray = PickingHelpers.getCameraRayForward(app.getCamera(), event.getX(), event.getY());
+                Geometry geometry = PickingHelpers.getClosestFilteredGeometry(
+                        worldNode, sceneDynamicObjects, ray);
 
                 if (geometry != null) {
                     logger.log(Level.INFO, "Dynamic Object Selected: {0}", geometry.getName());

@@ -39,7 +39,7 @@ public class DpadCharacterMotion extends AbstractAppState implements
     private SelectablePicture dpadPicture = null;
     private CharacterHandler characterHandler = null;
     private BetterCharacterControl characterControl = null;
-    private Vector3f maxVelocity = new Vector3f(1f, 0f, 1f);
+    private Vector3f maxVelocity = new Vector3f(2f, 0f, 2f);
 
     private boolean useCameraRotation = false;
     private Camera camera = null;
@@ -129,7 +129,7 @@ public class DpadCharacterMotion extends AbstractAppState implements
             levelCamRotation.multLocal(rotatedDpadVector);
         }
         walkDirection.set(maxVelocity.mult(rotatedDpadVector));
-        logger.log(Level.INFO, "Setting WalkDirection: {0}", walkDirection);
+//        logger.log(Level.INFO, "Setting WalkDirection: {0}", walkDirection);
         characterControl.setWalkDirection(walkDirection);
         if (walkDirection.lengthSquared() > 0) {
             characterControl.setViewDirection(walkDirection);
