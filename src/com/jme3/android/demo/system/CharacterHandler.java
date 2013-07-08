@@ -7,6 +7,7 @@ import com.jme3.animation.SkeletonControl;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import java.util.logging.Level;
@@ -27,7 +28,7 @@ public class CharacterHandler {
 
     public CharacterHandler(Node characterNode) {
         this.characterNode = characterNode;
-
+        characterNode.setShadowMode(RenderQueue.ShadowMode.Cast); 
         characterNode.getControl(SkeletonControl.class).setHardwareSkinningPreferred(true);
         characterNode.getControl(AnimControl.class).createChannel().setAnim("Idle");
         ((Geometry) characterNode.getChild(0)).setLodLevel(1);

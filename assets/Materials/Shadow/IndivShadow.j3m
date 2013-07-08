@@ -1,0 +1,12 @@
+Material My Material : Common/MatDefs/Misc/Unshaded.j3md {
+     MaterialParameters {
+        ColorMap : Textures/Shadows/shadow2.png
+        Color : 1.0 1.0 1.0 1.0
+     }
+    AdditionalRenderState {
+      Blend Alpha
+      DepthWrite Off
+      DepthTest Off
+      FaceCull Off
+    }
+}

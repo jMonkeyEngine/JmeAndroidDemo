@@ -3,6 +3,7 @@ package com.jme3.android.demo.system;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.InputActionListener;
+import com.jme3.android.demo.shadows.CheapShadowRenderer;
 import com.jme3.android.demo.utils.PhysicsHelpers;
 import com.jme3.android.demo.utils.PickingHelpers;
 import com.jme3.app.Application;
@@ -15,11 +16,15 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +61,10 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         loadScene();
         initCamera();
 
+        CheapShadowRenderer shadows = new CheapShadowRenderer(assetManager);
+        app.getViewPort().addProcessor(shadows);
+        rootNode.attachChild(shadows.getShadowNode());
+
         super.initialize(stateManager, app);
     }
 
@@ -84,7 +93,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         groundNode = (Node)worldNode.getChild("Ground");
 
         sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
-        Spatial box = sceneDynamicObjects.getChild("jME_Box");
+        Spatial box = sceneDynamicObjects.getChild("jME_Box");       
 
 //        BoundingBox bb = (BoundingBox)box.getWorldBound();
 //        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
