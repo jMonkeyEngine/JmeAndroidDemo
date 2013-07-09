@@ -1,5 +1,7 @@
 package com.jme3.android.demo.camera;
 
+import com.jme3.renderer.Camera;
+
 /**
  *
  * @author iwgeric
@@ -16,4 +18,5 @@ public interface DemoCamera {
     public void autoRotate(float value);
     public void autoZoom(float value);
     public void resetAutoZoom();
+    public Camera getCamera();
 }

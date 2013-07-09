@@ -127,4 +127,8 @@ public class CustomChaseCamera extends ChaseCamera implements DemoCamera {
         enableRotation(prevEnableRotation);
     }
 
+    public Camera getCamera() {
+        return cam;
+    }
+
 }

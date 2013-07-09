@@ -93,7 +93,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         groundNode = (Node)worldNode.getChild("Ground");
 
         sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
-        Spatial box = sceneDynamicObjects.getChild("jME_Box");       
+        Spatial box = sceneDynamicObjects.getChild("jME_Box");
 
 //        BoundingBox bb = (BoundingBox)box.getWorldBound();
 //        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
@@ -112,6 +112,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         cameraHandler.setTarget(mainCharacter.getModel());
         cameraHandler.setLookAtOffset(new Vector3f(0f, 0.5f, 0f));
         cameraHandler.init();
+        cameraHandler.enableKeepCharVisible(worldNode);
     }
 
     public Node getWorldNode() {
@@ -144,9 +145,6 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
 
     @Override
     public void update(float tpf) {
-        if (isEnabled()) {
-            cameraHandler.keepTargetVisible(worldNode, tpf);
-        }
     }
 
     @Override

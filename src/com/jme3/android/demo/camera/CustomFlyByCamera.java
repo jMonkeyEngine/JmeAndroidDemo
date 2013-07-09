@@ -69,4 +69,8 @@ public class CustomFlyByCamera extends FlyByCamera implements DemoCamera {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    public Camera getCamera() {
+        return cam;
+    }
+
 }
