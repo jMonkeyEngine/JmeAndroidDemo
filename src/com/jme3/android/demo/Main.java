@@ -9,7 +9,14 @@ import com.jme3.android.demo.system.SceneAppState;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.effect.ParticleEmitter;
+import com.jme3.effect.ParticleMesh;
 import com.jme3.input.event.TouchEvent;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.DepthOfFieldFilter;
 
 /**
  * Main application for JME3.0 android demo
@@ -23,6 +30,9 @@ public class Main extends SimpleApplication implements InputActionListener {
     private BulletAppState bulletAppState = new BulletAppState();
     private InputHandler inputHandler = new InputHandler();
     private CameraHandler cameraHandler = new CameraHandler();
+    private FilterPostProcessor fpp;
+    private DepthOfFieldFilter dofFilter;
+    private ParticleEmitter fire;
 
     private float totalTime = 0f;
 
@@ -50,6 +60,34 @@ public class Main extends SimpleApplication implements InputActionListener {
     @Override
     public void simpleInitApp() {
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
+
+//        fpp = new FilterPostProcessor(assetManager);
+//        //     fpp.setNumSamples(4);
+//
+//        dofFilter = new DepthOfFieldFilter();
+//        dofFilter.setFocusDistance(0);
+//        dofFilter.setFocusRange(100);
+//        dofFilter.setBlurScale(1.0f);
+//        fpp.addFilter(dofFilter);
+//        viewPort.addProcessor(fpp);
+
+//        fire = new ParticleEmitter("Emitter", ParticleMesh.Type.Triangle, 30);
+//        Material mat_red = new Material(assetManager, "Common/MatDefs/Misc/Particle.j3md");
+//        mat_red.setTexture("Texture", assetManager.loadTexture("Effects/Explosion/flame.png"));
+//        fire.setMaterial(mat_red);
+//        fire.setImagesX(2); fire.setImagesY(2); // 2x2 texture animation
+//        fire.setEndColor(  new ColorRGBA(1f, 0f, 0f, 1f));   // red
+//        fire.setStartColor(new ColorRGBA(1f, 1f, 0f, 0.5f)); // yellow
+//        fire.getParticleInfluencer().setInitialVelocity(new Vector3f(0,2,0));
+//        fire.setStartSize(1.5f);
+//        fire.setEndSize(0.1f);
+//        fire.setGravity(0,0,0);
+//        fire.setLowLife(0.5f);
+//        fire.setHighLife(3f);
+//        fire.getParticleInfluencer().setVelocityVariation(0.3f);
+//        fire.setLocalTranslation(10.4140625f, 0.2f, 31.622173f);
+//        rootNode.attachChild(fire);
+
 
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
@@ -99,6 +137,11 @@ public class Main extends SimpleApplication implements InputActionListener {
     public boolean onInputAction(TouchEvent event, float tpf) {
         boolean consumed = false;
         switch (event.getType()) {
+            case TAP:
+//                dofFilter.setEnabled(!dofFilter.isEnabled());
+//                fire.setEnabled(!fire.isEnabled());
+                consumed = false;  // no need to block others
+                break;
             case DOUBLETAP:
                 stats = !stats;
                 setDisplayStatView(stats);
