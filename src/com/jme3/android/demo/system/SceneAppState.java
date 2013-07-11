@@ -85,6 +85,12 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
 
         this.rootNode.attachChild(curScene.getWorldNode());
 
+        // preloadScene is done here to send the Android Bitmap textures
+        //   to OpenGL and then recycle the Android Bitmap images
+        // This helps remove game hesitations when bringing a texture into
+        //   view for the first time since the image is already loaded to OpenGL
+        app.getRenderManager().preloadScene(curScene.getWorldNode());
+
         sceneLoaded = true;
 
     }
