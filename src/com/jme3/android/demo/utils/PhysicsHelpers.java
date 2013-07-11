@@ -40,9 +40,16 @@ public class PhysicsHelpers {
             Control control = spatial.getControl(i);
             if (control instanceof PhysicsControl) {
                 PhysicsControl phyControl = (PhysicsControl)control;
-                phyControl.setEnabled(false);
                 if (phyControl.getPhysicsSpace() != null) {
+                    if (enableLogging) {
+                        logger.log(Level.INFO, "Removing control: {0} in PhysicsSpace: {1}",
+                                new Object[]{control, phyControl.getPhysicsSpace()});
+                    }
                     phyControl.getPhysicsSpace().remove(control);
+                } else {
+                    if (enableLogging) {
+                        logger.log(Level.INFO, "PhysicsSpace was null for control: {0}", control);
+                    }
                 }
             }
             spatial.removeControl(control);

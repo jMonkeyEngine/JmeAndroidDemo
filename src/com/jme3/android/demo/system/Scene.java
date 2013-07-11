@@ -144,6 +144,8 @@ public class Scene {
         scene.addControl(sceneRigidBodyControl);
         physicsSpace.add(sceneRigidBodyControl);
         logger.log(Level.INFO, "Added scene {0} PhysicsControl", scene.getName());
+//        logger.log(Level.INFO, "Created Physics Control: {0}, in PhysicsSpace: {1}",
+//                new Object[]{sceneRigidBodyControl, physicsSpace});
 
         // For each child in the otherObjects node, create a physics RigidBodyControl
         for (Spatial child: otherObjects.getChildren()) {
@@ -151,6 +153,8 @@ public class Scene {
             child.addControl(phyControl);
             physicsSpace.add(phyControl);
             logger.log(Level.INFO, "Added otherObject {0} PhysicsControl", child.getName());
+//            logger.log(Level.INFO, "Created Physics Control: {0}, in PhysicsSpace: {1}",
+//                    new Object[]{phyControl, physicsSpace});
         }
 
     }
