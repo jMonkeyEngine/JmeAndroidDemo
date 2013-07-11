@@ -5,6 +5,7 @@ import com.jme3.android.demo.input.CharacterMotion;
 import com.jme3.animation.AnimControl;
 import com.jme3.animation.SkeletonControl;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue;
@@ -24,11 +25,15 @@ public class CharacterHandler {
     private BetterCharacterControl charPhysicsControl;
     private CharacterAnimControl charAnimControl;
     private CharacterMotion motionControl;
+    private PhysicsSpace physicsSpace;
+    private Vector3f lookAtOffset = new Vector3f();
 
 
-    public CharacterHandler(Node characterNode) {
+    public CharacterHandler(Node characterNode, PhysicsSpace physicsSpace) {
+        this.physicsSpace = physicsSpace;
         this.characterNode = characterNode;
-        characterNode.setShadowMode(RenderQueue.ShadowMode.Cast); 
+
+        characterNode.setShadowMode(RenderQueue.ShadowMode.Cast);
         characterNode.getControl(SkeletonControl.class).setHardwareSkinningPreferred(true);
         characterNode.getControl(AnimControl.class).createChannel().setAnim("Idle");
         ((Geometry) characterNode.getChild(0)).setLodLevel(1);
@@ -40,12 +45,15 @@ public class CharacterHandler {
     private void initPhysicsControl() {
         if (characterNode.getWorldBound() instanceof BoundingBox) {
             BoundingBox bb = (BoundingBox)characterNode.getWorldBound();
+            lookAtOffset.set(Vector3f.UNIT_Y.mult(bb.getYExtent()*2f));
             float radius = Math.max(bb.getXExtent(), bb.getZExtent());
             float height = bb.getYExtent();
             height = Math.max(height, radius*2.5f);
             charPhysicsControl = new BetterCharacterControl(radius, height, 50f);
             charPhysicsControl.setViewDirection(characterNode.getWorldRotation().mult(Vector3f.UNIT_Z));
             characterNode.addControl(charPhysicsControl);
+            physicsSpace.add(charPhysicsControl);
+            logger.log(Level.SEVERE, "Added mainCharacter {0} PhysicsControl", characterNode.getName());
         } else {
             Logger.getLogger(CharacterHandler.class.getName()).log(Level.INFO,
                     "WorldBound is not a BoundingBox, Character Control not created.");
@@ -67,6 +75,10 @@ public class CharacterHandler {
 
     public CharacterAnimControl getCharAnimControl() {
         return charAnimControl;
+    }
+
+    public Vector3f getLookAtOffset() {
+        return lookAtOffset;
     }
 
     public void setCharacterMotion(CharacterMotion characterMotion) {

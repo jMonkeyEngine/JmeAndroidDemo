@@ -40,21 +40,19 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
     private AppSettings appSettings = null;
     private Camera camera = null;
 
-    private Integer pointerId = null;
-
     private CharacterHandler characterHandler = null;
     private BetterCharacterControl characterControl = null;
     private Spatial characterSpatial = null;
     private Vector3f maxVelocity = new Vector3f(2f, 0f, 2f);
     private Vector3f walkDirection = new Vector3f();
 
-    private Geometry geoNavMesh;
     private NavMesh navMesh;
     private NavMeshPathfinder navMeshPathFinder;
     private DebugInfo navMeshDebugInfo = new DebugInfo();
     private Node navWayPointsNode = new Node("navWayPointsNode");
 
-    private Vector3f tmpTarget = new Vector3f(-12.3219385f, 0.49764287f, 30.71899f);
+    private Spatial world;
+    private Spatial ground;
 
     public NavMeshCharacterMotion() {
         super();
@@ -64,6 +62,23 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         this.characterHandler = characterHandler;
         this.characterControl = characterHandler.getCharPhysicsControl();
         this.characterSpatial = characterHandler.getModel();
+    }
+
+    public void setWorldNode(Spatial world) {
+        this.world = world;
+    }
+
+    public void setGroundNode(Spatial ground) {
+        this.ground = ground;
+    }
+
+    public void setNavMesh(Geometry navMeshSpatial) {
+        logger.log(Level.INFO, "Creating NavMesh and PathFinder");
+        navMesh = new NavMesh(navMeshSpatial.getMesh());
+        navMeshPathFinder = new NavMeshPathfinder(navMesh);
+        navMeshDebugInfo = new DebugInfo();
+        navWayPointsNode.detachAllChildren();
+        this.rootNode.attachChild(navWayPointsNode);
     }
 
     private void computeNav(Vector3f startLocation, Vector3f targetLocation) {
@@ -87,16 +102,6 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         this.appSettings = app.getContext().getSettings();
         this.camera = this.app.getCamera();
 
-        setCharacterHandler(this.app.getSceneAppState().getMainCharacter());
-
-        Geometry navMeshSpatial = this.app.getSceneAppState().getNavMesh();
-
-        logger.log(Level.INFO, "Creating NavMesh and PathFinder");
-        navMesh = new NavMesh(navMeshSpatial.getMesh());
-        navMeshPathFinder = new NavMeshPathfinder(navMesh);
-        navMeshDebugInfo = new DebugInfo();
-        this.rootNode.attachChild(navWayPointsNode);
-
         super.initialize(stateManager, app);
     }
 
@@ -105,7 +110,6 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         if (enabled) {
         } else {
         }
-        pointerId = null;
         super.setEnabled(enabled);
     }
 
@@ -113,7 +117,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
     public void update(float tpf) {
         super.update(tpf);
 
-        if (characterHandler.getCharacterMotion() == null || !characterHandler.getCharacterMotion().equals(this)) {
+        if (characterHandler == null || characterHandler.getCharacterMotion() == null || !characterHandler.getCharacterMotion().equals(this)) {
             return;
         }
 
@@ -175,7 +179,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
             case TAP:
                 Ray ray = PickingHelpers.getCameraRayForward(camera, event.getX(), event.getY());
                 Vector3f target = PickingHelpers.getClosestFilteredContactPoint(
-                        app.getSceneAppState().getWorldNode(), app.getSceneAppState().getGroundNode(),
+                        world, ground,
                         ray);
                 if (target != null) {
                     characterHandler.setCharacterMotion(this);

@@ -5,16 +5,14 @@ import com.jme3.android.demo.input.DpadCharacterMotion;
 import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.android.demo.input.InputHandler;
 import com.jme3.android.demo.input.NavMeshCharacterMotion;
+import com.jme3.android.demo.system.Scene;
 import com.jme3.android.demo.system.SceneAppState;
+import com.jme3.android.demo.utils.OtherUtils;
 import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.effect.ParticleEmitter;
-import com.jme3.effect.ParticleMesh;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.DepthOfFieldFilter;
 
@@ -30,31 +28,23 @@ public class Main extends SimpleApplication implements InputActionListener {
     private BulletAppState bulletAppState = new BulletAppState();
     private InputHandler inputHandler = new InputHandler();
     private CameraHandler cameraHandler = new CameraHandler();
+    private DpadCharacterMotion dpadCharacterMotion;
+    private NavMeshCharacterMotion navMeshCharacterMotion;
+
     private FilterPostProcessor fpp;
     private DepthOfFieldFilter dofFilter;
     private ParticleEmitter fire;
 
     private float totalTime = 0f;
+    private boolean sceneNeedsLoading = false;
 
     public static void main(String[] args) {
         Main app = new Main();
         app.start();
     }
 
-    public SceneAppState getSceneAppState() {
-        return sceneAppState;
-    }
-
     public BulletAppState getBulletAppState() {
         return bulletAppState;
-    }
-
-    public InputHandler getInputHandler() {
-        return inputHandler;
-    }
-
-    public CameraHandler getCameraHandler() {
-        return cameraHandler;
     }
 
     @Override
@@ -89,6 +79,7 @@ public class Main extends SimpleApplication implements InputActionListener {
 //        rootNode.attachChild(fire);
 
 
+        bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
         bulletAppState.setDebugEnabled(false);
 
@@ -97,22 +88,31 @@ public class Main extends SimpleApplication implements InputActionListener {
         sceneAppState = new SceneAppState();
         stateManager.attach(sceneAppState);
 
-        DpadCharacterMotion dpadCharacterMotion = new DpadCharacterMotion();
+        Scene newScene;
+        // Repeat for each scene
+        // Call setxxx methods to change the node/geometry names of the children of the scene
+        newScene = new Scene();
+        newScene.setWorldFileName("Scenes/World1.j3o");
+        sceneAppState.addScene(newScene);
+
+        dpadCharacterMotion = new DpadCharacterMotion();
         dpadCharacterMotion.setCamera(cam);
         dpadCharacterMotion.setUseCameraRotation(true);
         stateManager.attach(dpadCharacterMotion);
 
-        NavMeshCharacterMotion navMeshCharacterMotion = new NavMeshCharacterMotion();
+        navMeshCharacterMotion = new NavMeshCharacterMotion();
         stateManager.attach(navMeshCharacterMotion);
 
-
+        cameraHandler = new CameraHandler();
         cameraHandler.setCamera(cam);
-        cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE);
 
-        // Kept assigning input listener in Main to control the order.
-        // inputs are sent to the classes based on order added
-        // each input class can consume the input to prevent remaining classes
-        // from getting the input event
+        inputHandler = new InputHandler();
+        stateManager.attach(inputHandler);
+
+        // Kept assigning input listeners in Main to control the order.
+        // Inputs are sent to the classes based on order added
+        // Each listener can consume the input to prevent remaining listeners
+        //   from getting the input event
 
         /* dpad character motion always has first priority over input events */
         inputHandler.addInputActionListener(dpadCharacterMotion);
@@ -129,9 +129,27 @@ public class Main extends SimpleApplication implements InputActionListener {
         /* camera control should always be last to collect events not handled elsewhere */
         inputHandler.addInputActionListener(cameraHandler);
 
-        // attach inputHandler last so that all the other appstates get initialized first
-        stateManager.attach(inputHandler);
+        sceneNeedsLoading = true;
 
+    }
+
+    // normally this method would be called from the UIF when the user hits
+    //   a "play" type button and passing the name of the world j3o file to load.
+    private void loadScene(String worldFileName) {
+        sceneAppState.loadScene(worldFileName);
+
+        dpadCharacterMotion.setCharacterHandler(sceneAppState.getMainCharacter());
+
+        navMeshCharacterMotion.setCharacterHandler(sceneAppState.getMainCharacter());
+        navMeshCharacterMotion.setNavMesh(sceneAppState.getNavMesh());
+        navMeshCharacterMotion.setWorldNode(sceneAppState.getWorldNode());
+        navMeshCharacterMotion.setGroundNode(sceneAppState.getGroundNode());
+
+        cameraHandler.setCameraMode(CameraHandler.CameraMode.CHASE);
+        cameraHandler.setTarget(sceneAppState.getMainCharacter().getModel());
+        cameraHandler.setLookAtOffset(sceneAppState.getMainCharacter().getLookAtOffset());
+        cameraHandler.init();
+        cameraHandler.enableKeepCharVisible(sceneAppState.getWorldNode());
     }
 
     public boolean onInputAction(TouchEvent event, float tpf) {
@@ -155,39 +173,45 @@ public class Main extends SimpleApplication implements InputActionListener {
 
     @Override
     public void simpleUpdate(float tpf) {
-//        totalTime += tpf;
-//        if (totalTime > 30) {
+        totalTime += tpf;
+        if (totalTime > 30) {
+            // uncomment this code to automatically load the scene after 30sec
+//            if (!sceneAppState.isLoaded()) {
+//                sceneNeedsLoading = true;
+//                totalTime = 0f;
+//            }
+
+            // uncomment this code to automatically enable and attach the scene after 30sec
 //            sceneAppState.setEnabled(true);
-//        } else if (totalTime > 20) {
+        } else if (totalTime > 20) {
+            // uncomment this code to automatically unload the scene after 20sec
+//            if (sceneAppState.isLoaded()) {
+//                sceneAppState.unloadCurScene();
+//            }
+
+            // uncomment this code to automatically disable and detatch the scene after 20sec
 //            sceneAppState.setEnabled(false);
-//        }
+        }
+
+        if (sceneNeedsLoading) {
+//            OtherUtils.printMemoryUsed("Before Load Scene: ");
+            loadScene("Scenes/World1.j3o");
+            sceneNeedsLoading = false;
+//            OtherUtils.printMemoryUsed("After Load Scene: ");
+        }
+    }
+
+    @Override
+    public void reshape(int w, int h){
+        super.reshape(w, h);
+
+        // TODO: add code here to adjust guiNode objects
+        // dpadCharacterMotion.reshape(w, h);
+
+        // TODO: add code here to adjust frustum
+        // maybe use cam.setFrustumPerspective, but we'll have to initially
+        // create the initial frustum so we can adjust the foy for each orientation
     }
 
 
-
-
-//
-//    private Vector3f pick(float x, float y) {
-//        TempVars vars = TempVars.get();
-//        Vector2f v2 = vars.vect2d;
-//        v2.set(x, y);
-//        Vector3f origin = cam.getWorldCoordinates(v2, 0.0f, vars.vect1);
-//        Vector3f direction = cam.getWorldCoordinates(v2, 0.3f, vars.vect2);
-//        direction.subtractLocal(origin).normalizeLocal();
-//
-//        Ray ray = new Ray(origin, direction);
-//        CollisionResults results = new CollisionResults();
-//        Vector3f contactPoint = null;
-//        ground.collideWith(ray, results);
-//
-//
-//        if (results.size() > 0) {
-//            CollisionResult closest = results.getClosestCollision();
-//            contactPoint = closest.getContactPoint();
-//        }
-//
-//        vars.release();
-//        return contactPoint;
-//
-//    }
 }

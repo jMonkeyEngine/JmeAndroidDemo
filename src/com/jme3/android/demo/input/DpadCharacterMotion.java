@@ -84,11 +84,6 @@ public class DpadCharacterMotion extends AbstractAppState implements
         this.appSettings = app.getContext().getSettings();
 
         initDpad();
-        if (camera == null) {
-            camera = this.app.getViewPort().getCamera();
-        }
-
-        setCharacterHandler(this.app.getSceneAppState().getMainCharacter());
 
         super.initialize(stateManager, app);
     }
@@ -112,7 +107,7 @@ public class DpadCharacterMotion extends AbstractAppState implements
     public void update(float tpf) {
         super.update(tpf);
 
-        if (characterHandler.getCharacterMotion() == null || !characterHandler.getCharacterMotion().equals(this)) {
+        if (characterHandler == null || characterHandler.getCharacterMotion() == null || !characterHandler.getCharacterMotion().equals(this)) {
             return;
         }
 

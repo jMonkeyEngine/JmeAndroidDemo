@@ -1,7 +1,6 @@
 package com.jme3.android.demo.system;
 
 import com.jme3.android.demo.Main;
-import com.jme3.android.demo.camera.CameraHandler;
 import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.android.demo.shadows.CheapShadowRenderer;
 import com.jme3.android.demo.utils.PhysicsHelpers;
@@ -11,20 +10,16 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.light.DirectionalLight;
-import com.jme3.light.Light;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,14 +34,16 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
     private BulletAppState bulletAppState;
     private AssetManager assetManager;
     private Node rootNode;
-    private Node worldNode;
-    private Node sceneNode;
-    private CharacterHandler mainCharacter;
-    private Geometry navMesh;
-    private Spatial navMeshTargetMarker;
-    private CameraHandler cameraHandler;
-    private Node groundNode;
-    private Node sceneDynamicObjects;
+//    private IntMap<Scene> scenes = new IntMap<Scene>();
+    private Map<String, Scene> scenes = new HashMap<String, Scene>();
+
+    private Scene curScene;
+    private boolean sceneLoaded = false;
+
+    private CharacterHandler characterHandler;
+
+
+
 
     public SceneAppState() {
     }
@@ -58,9 +55,6 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         this.rootNode = this.app.getRootNode();
         this.bulletAppState = this.app.getBulletAppState();
 
-        loadScene();
-        initCamera();
-
         CheapShadowRenderer shadows = new CheapShadowRenderer(assetManager);
         app.getViewPort().addProcessor(shadows);
         rootNode.attachChild(shadows.getShadowNode());
@@ -68,79 +62,83 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
         super.initialize(stateManager, app);
     }
 
-    private void loadScene(){
-        if (worldNode != null) {
-            worldNode.removeFromParent();
-        }
-        worldNode = (Node)assetManager.loadModel("Scenes/World1.j3o");
-
-        Node mainCharacterNode = (Node)worldNode.getChild("Jaime");
-        mainCharacter = new CharacterHandler((Node)mainCharacterNode.getChild(0));
-        bulletAppState.getPhysicsSpace().add(mainCharacter.getCharPhysicsControl());
-
-        sceneNode = (Node)worldNode.getChild("Scene");
-        // create mesh collision shape around scene
-        // NavMesh Geometry has JmePhysicsIgnore UserData so it will not
-        //   be included in the collision shape
-        CollisionShape sceneColShape = CollisionShapeFactory.createMeshShape(sceneNode);
-        RigidBodyControl sceneRigidBodyControl = new RigidBodyControl(sceneColShape, 0f);
-        sceneNode.addControl(sceneRigidBodyControl);
-        bulletAppState.getPhysicsSpace().add(sceneRigidBodyControl);
-
-        navMesh = (Geometry)sceneNode.getChild("NavMesh");
-
-        navMeshTargetMarker = worldNode.getChild("NavMeshTargetMarker");
-        groundNode = (Node)worldNode.getChild("Ground");
-
-        sceneDynamicObjects = (Node)worldNode.getChild("SceneObjects");
-        Spatial box = sceneDynamicObjects.getChild("jME_Box");
-
-//        BoundingBox bb = (BoundingBox)box.getWorldBound();
-//        BoxCollisionShape colBox = new BoxCollisionShape(bb.getExtent(null));
-//        RigidBodyControl phyBox = new RigidBodyControl(colBox, 5f);
-
-        RigidBodyControl phyBox = new RigidBodyControl(5f);
-
-        box.addControl(phyBox);
-        bulletAppState.getPhysicsSpace().add(phyBox);
-
-        this.rootNode.attachChild(worldNode);
+    public void addScene(Scene scene) {
+        scenes.put(scene.getWorldFileName(), scene);
     }
 
-    private void initCamera() {
-        cameraHandler = this.app.getCameraHandler();
-        cameraHandler.setTarget(mainCharacter.getModel());
-        cameraHandler.setLookAtOffset(new Vector3f(0f, 0.5f, 0f));
-        cameraHandler.init();
-        cameraHandler.enableKeepCharVisible(worldNode);
+    public void loadScene(String worldFileName){
+        sceneLoaded = false;
+        if (curScene != null) {
+            unloadCurScene();
+        }
+
+        curScene = scenes.get(worldFileName);
+        if (curScene == null) {
+            throw new IllegalArgumentException("Scene " + worldFileName + " does not exist");
+        }
+        curScene.loadScene(assetManager);
+        curScene.initScenePhysics(bulletAppState.getPhysicsSpace());
+
+        characterHandler = new CharacterHandler(
+                (Node)curScene.getMainCharacter().getChild(0),
+                bulletAppState.getPhysicsSpace());
+
+        this.rootNode.attachChild(curScene.getWorldNode());
+
+        sceneLoaded = true;
+
+    }
+
+    public void unloadCurScene() {
+        curScene.unloadScene();
+
+        sceneLoaded = false;
     }
 
     public Node getWorldNode() {
-        return worldNode;
+        if (curScene != null) {
+            return curScene.getWorldNode();
+        }
+        return null;
     }
 
     public Node getSceneNode() {
-        return sceneNode;
+        if (curScene != null) {
+            return curScene.getSceneNode();
+        }
+        return null;
     }
 
-    public Node getGroundNode() {
-        return groundNode;
+    public Spatial getGroundNode() {
+        if (curScene != null) {
+            return curScene.getGround();
+        }
+        return null;
     }
 
     public Geometry getNavMesh() {
-        return navMesh;
+        if (curScene != null) {
+            return curScene.getNavMesh();
+        }
+        return null;
+    }
+
+    public Node getOtherObjects() {
+        if (curScene != null) {
+            return curScene.getOtherObjects();
+        }
+        return null;
     }
 
     public CharacterHandler getMainCharacter() {
-        return mainCharacter;
+        if (characterHandler != null) {
+            return characterHandler;
+        }
+        return null;
     }
 
-    public Spatial getNavMeshTargetMarker() {
-        return navMeshTargetMarker;
-    }
-
-    public Node getSceneDynamicObjects() {
-        return sceneDynamicObjects;
+    public boolean isLoaded() {
+        return sceneLoaded;
     }
 
     @Override
@@ -150,9 +148,9 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
     @Override
     public void setEnabled(boolean enabled) {
         if (enabled) {
-            rootNode.attachChild(worldNode);
+            rootNode.attachChild(curScene.getWorldNode());
         } else {
-            worldNode.removeFromParent();
+            curScene.getWorldNode().removeFromParent();
         }
         if (bulletAppState != null) {
             bulletAppState.setEnabled(enabled);
@@ -171,7 +169,7 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
             case TAP:
                 Ray ray = PickingHelpers.getCameraRayForward(app.getCamera(), event.getX(), event.getY());
                 Geometry geometry = PickingHelpers.getClosestFilteredGeometry(
-                        worldNode, sceneDynamicObjects, ray);
+                        curScene.getWorldNode(), curScene.getOtherObjects(), ray);
 
                 if (geometry != null) {
                     logger.log(Level.INFO, "Dynamic Object Selected: {0}", geometry.getName());
