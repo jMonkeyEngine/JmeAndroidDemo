@@ -15,6 +15,9 @@ import com.jme3.effect.ParticleEmitter;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.DepthOfFieldFilter;
+import com.jme3.post.filters.FadeFilter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main application for JME3.0 android demo
@@ -22,6 +25,7 @@ import com.jme3.post.filters.DepthOfFieldFilter;
  * @author nehon
  */
 public class Main extends SimpleApplication implements InputActionListener {
+    private final static Logger logger = Logger.getLogger(Main.class.getName());
 
     private boolean stats = true;
     private SceneAppState sceneAppState;
@@ -34,9 +38,12 @@ public class Main extends SimpleApplication implements InputActionListener {
     private FilterPostProcessor fpp;
     private DepthOfFieldFilter dofFilter;
     private ParticleEmitter fire;
+    private FadeFilter fadeFilter;
 
     private float totalTime = 0f;
     private boolean sceneNeedsLoading = false;
+    private boolean startFadeIn = false;
+    private float fadeDelay = -1f;
 
     public static void main(String[] args) {
         Main app = new Main();
@@ -51,9 +58,16 @@ public class Main extends SimpleApplication implements InputActionListener {
     public void simpleInitApp() {
         stateManager.detach(stateManager.getState(FlyCamAppState.class));
 
-//        fpp = new FilterPostProcessor(assetManager);
-//        //     fpp.setNumSamples(4);
-//
+        fpp = new FilterPostProcessor(assetManager);
+        //     fpp.setNumSamples(4);
+        viewPort.addProcessor(fpp);
+
+        fadeFilter = new FadeFilter(3f);
+        fadeFilter.setValue(0);
+        fadeFilter.setEnabled(true);
+        fpp.addFilter(fadeFilter);
+
+
 //        dofFilter = new DepthOfFieldFilter();
 //        dofFilter.setFocusDistance(0);
 //        dofFilter.setFocusRange(100);
@@ -174,15 +188,23 @@ public class Main extends SimpleApplication implements InputActionListener {
     @Override
     public void simpleUpdate(float tpf) {
         totalTime += tpf;
+
+        // This section of code repeats after 30 seconds
+        // Used for debug only
         if (totalTime > 30) {
+            totalTime = 0f;
             // uncomment this code to automatically load the scene after 30sec
 //            if (!sceneAppState.isLoaded()) {
 //                sceneNeedsLoading = true;
-//                totalTime = 0f;
 //            }
 
             // uncomment this code to automatically enable and attach the scene after 30sec
 //            sceneAppState.setEnabled(true);
+
+            // uncomment this code to fade in the scene after 30sec
+//            fadeFilter.fadeIn();
+
+
         } else if (totalTime > 20) {
             // uncomment this code to automatically unload the scene after 20sec
 //            if (sceneAppState.isLoaded()) {
@@ -191,14 +213,31 @@ public class Main extends SimpleApplication implements InputActionListener {
 
             // uncomment this code to automatically disable and detatch the scene after 20sec
 //            sceneAppState.setEnabled(false);
+
+            // uncomment this code to fade out the scene after 20sec
+//            fadeFilter.fadeOut();
+
+        }
+
+        if (startFadeIn) {
+            // need a slight delay due to first frame having a high fps which
+            //   causes the fadeFilter to be too bright on the first frame
+            if (fadeDelay < 0) {
+                fadeFilter.fadeIn();
+                startFadeIn = false;
+            }
+            fadeDelay -= tpf;
         }
 
         if (sceneNeedsLoading) {
 //            OtherUtils.printMemoryUsed("Before Load Scene: ");
             loadScene("Scenes/World1.j3o");
             sceneNeedsLoading = false;
+            startFadeIn = true;
+            fadeDelay = 0.01f;
 //            OtherUtils.printMemoryUsed("After Load Scene: ");
         }
+
     }
 
     @Override
@@ -208,7 +247,7 @@ public class Main extends SimpleApplication implements InputActionListener {
         // TODO: add code here to adjust guiNode objects
         // dpadCharacterMotion.reshape(w, h);
 
-        // TODO: add code here to adjust frustum
+        // TODO: add code here to adjust frustum based on landscape or portrait
         // maybe use cam.setFrustumPerspective, but we'll have to initially
         // create the initial frustum so we can adjust the foy for each orientation
     }
