@@ -49,11 +49,15 @@ public class CharacterHandler {
             float radius = Math.max(bb.getXExtent(), bb.getZExtent());
             float height = bb.getYExtent();
             height = Math.max(height, radius*2.5f);
-            charPhysicsControl = new BetterCharacterControl(radius, height, 50f);
+            float mass = 50f;
+            charPhysicsControl = new BetterCharacterControl(radius, height, mass);
             charPhysicsControl.setViewDirection(characterNode.getWorldRotation().mult(Vector3f.UNIT_Z));
+            charPhysicsControl.setJumpForce(Vector3f.UNIT_Y.mult(mass*2f));
             characterNode.addControl(charPhysicsControl);
             physicsSpace.add(charPhysicsControl);
             logger.log(Level.SEVERE, "Added mainCharacter {0} PhysicsControl", characterNode.getName());
+            logger.log(Level.INFO, "Height: {0}, radius: {1}, mass: {2}",
+                    new Object[]{height, radius, mass});
         } else {
             Logger.getLogger(CharacterHandler.class.getName()).log(Level.INFO,
                     "WorldBound is not a BoundingBox, Character Control not created.");
