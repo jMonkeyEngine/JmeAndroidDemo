@@ -1,10 +1,15 @@
 package com.jme3.android.demo.utils;
 
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.PhysicsControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.UserData;
 import com.jme3.scene.control.Control;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,5 +90,44 @@ public class PhysicsHelpers {
         spatial.depthFirstTraversal(v);
     }
 
+    public synchronized static void createIndivMeshRigidBodies(
+            final PhysicsSpace physicsSpace, final Spatial spatial, final float mass,
+            final boolean enableLogging) {
+
+        SceneGraphVisitorAdapter v = new SceneGraphVisitorAdapter() {
+            @Override
+            public void visit(Node node) {
+                // Skip creating rigid body of Nodes, only do the Geometries
+                // Allows bullet to take advantage of broadphase
+            }
+
+            @Override
+            public void visit(Geometry geometry) {
+                Boolean bool = geometry.getUserData(UserData.JME_PHYSICSIGNORE);
+                if (bool != null && bool.booleanValue()) {
+                    logger.log(Level.INFO, "rigid body skipped for {0}", geometry.getName());
+                    return;
+                }
+
+                CollisionShape colShape;
+                if (mass > 0) {
+                    colShape = CollisionShapeFactory.createDynamicMeshShape(geometry);
+                } else {
+                    colShape = CollisionShapeFactory.createMeshShape(geometry);
+                }
+
+                RigidBodyControl rigidBodyControl = new RigidBodyControl(colShape, mass);
+                geometry.addControl(rigidBodyControl);
+                physicsSpace.add(rigidBodyControl);
+                logger.log(Level.INFO, "Added rigid body to {0}", geometry.getName());
+                logger.log(Level.INFO, "Created Physics Control: {0}, in PhysicsSpace: {1}",
+                        new Object[]{rigidBodyControl, physicsSpace});
+            }
+
+        };
+
+//        spatial.breadthFirstTraversal(v);
+        spatial.depthFirstTraversal(v);
+    }
 
 }

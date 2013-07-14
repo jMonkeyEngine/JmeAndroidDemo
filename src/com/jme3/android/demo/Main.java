@@ -163,7 +163,7 @@ public class Main extends SimpleApplication implements InputActionListener {
         cameraHandler.setTarget(sceneAppState.getMainCharacter().getModel());
         cameraHandler.setLookAtOffset(sceneAppState.getMainCharacter().getLookAtOffset());
         cameraHandler.init();
-        cameraHandler.enableKeepCharVisible(sceneAppState.getWorldNode());
+        cameraHandler.enableKeepCharVisible(bulletAppState.getPhysicsSpace(), sceneAppState.getWorldNode());
     }
 
     public boolean onInputAction(TouchEvent event, float tpf) {

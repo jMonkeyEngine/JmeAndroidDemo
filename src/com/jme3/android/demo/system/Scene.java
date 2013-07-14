@@ -3,9 +3,6 @@ package com.jme3.android.demo.system;
 import com.jme3.android.demo.utils.PhysicsHelpers;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -139,23 +136,10 @@ public class Scene {
         // create mesh collision shape around static scene
         // NavMesh Geometry has JmePhysicsIgnore UserData so it will not
         //   be included in the collision shape
-        CollisionShape sceneColShape = CollisionShapeFactory.createMeshShape(scene);
-        RigidBodyControl sceneRigidBodyControl = new RigidBodyControl(sceneColShape, 0f);
-        scene.addControl(sceneRigidBodyControl);
-        physicsSpace.add(sceneRigidBodyControl);
-        logger.log(Level.INFO, "Added scene {0} PhysicsControl", scene.getName());
-//        logger.log(Level.INFO, "Created Physics Control: {0}, in PhysicsSpace: {1}",
-//                new Object[]{sceneRigidBodyControl, physicsSpace});
+        PhysicsHelpers.createIndivMeshRigidBodies(physicsSpace, scene, 0f, true);
 
         // For each child in the otherObjects node, create a physics RigidBodyControl
-        for (Spatial child: otherObjects.getChildren()) {
-            RigidBodyControl phyControl = new RigidBodyControl(5f);
-            child.addControl(phyControl);
-            physicsSpace.add(phyControl);
-            logger.log(Level.INFO, "Added otherObject {0} PhysicsControl", child.getName());
-//            logger.log(Level.INFO, "Created Physics Control: {0}, in PhysicsSpace: {1}",
-//                    new Object[]{phyControl, physicsSpace});
-        }
+        PhysicsHelpers.createIndivMeshRigidBodies(physicsSpace, otherObjects, 5f, true);
 
     }
 

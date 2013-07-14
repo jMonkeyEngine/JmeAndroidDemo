@@ -46,7 +46,7 @@ public class CharacterHandler {
         if (characterNode.getWorldBound() instanceof BoundingBox) {
             BoundingBox bb = (BoundingBox)characterNode.getWorldBound();
             lookAtOffset.set(Vector3f.UNIT_Y.mult(bb.getYExtent()*2f));
-            float radius = Math.max(bb.getXExtent(), bb.getZExtent());
+            float radius = Math.min(bb.getXExtent(), bb.getZExtent());
             float height = bb.getYExtent();
             height = Math.max(height, radius*2.5f);
             float mass = 50f;
@@ -86,11 +86,11 @@ public class CharacterHandler {
     }
 
     public void setCharacterMotion(CharacterMotion characterMotion) {
-        if (characterMotion == null) {
+//        if (characterMotion == null) {
 //            logger.log(Level.INFO, "Setting CharacterMotion to null");
-        } else {
+//        } else {
 //            logger.log(Level.INFO, "Setting CharacterMotion: {0}", characterMotion.getClass().getName());
-        }
+//        }
         this.motionControl = characterMotion;
     }
 

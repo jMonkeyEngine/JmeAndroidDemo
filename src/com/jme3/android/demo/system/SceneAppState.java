@@ -3,24 +3,22 @@ package com.jme3.android.demo.system;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.android.demo.shadows.CheapShadowRenderer;
-import com.jme3.android.demo.utils.PhysicsHelpers;
-import com.jme3.android.demo.utils.PickingHelpers;
+import com.jme3.android.demo.utils.physicsray.PhysicsRay;
+import com.jme3.android.demo.utils.physicsray.PhysicsRayHelpers;
+import com.jme3.android.demo.utils.physicsray.PhysicsRayResult;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -34,16 +32,12 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
     private BulletAppState bulletAppState;
     private AssetManager assetManager;
     private Node rootNode;
-//    private IntMap<Scene> scenes = new IntMap<Scene>();
     private Map<String, Scene> scenes = new HashMap<String, Scene>();
 
     private Scene curScene;
     private boolean sceneLoaded = false;
 
     private CharacterHandler characterHandler;
-
-
-
 
     public SceneAppState() {
     }
@@ -173,28 +167,25 @@ public class SceneAppState extends AbstractAppState implements InputActionListen
 
         switch (event.getType()) {
             case TAP:
-                Ray ray = PickingHelpers.getCameraRayForward(app.getCamera(), event.getX(), event.getY());
-                Geometry geometry = PickingHelpers.getClosestFilteredGeometry(
-                        curScene.getWorldNode(), curScene.getOtherObjects(), ray);
-
-                if (geometry != null) {
-                    logger.log(Level.INFO, "Dynamic Object Selected: {0}", geometry.getName());
-                    PhysicsControl physicsControl = PhysicsHelpers.getPhysicsControl(geometry);
-                    if (physicsControl != null) {
-//                        logger.log(Level.INFO, "PhysicsControl found: {0}", physicsControl.getClass().getName());
-                        if (physicsControl instanceof RigidBodyControl) {
-                            RigidBodyControl rigidBodyControl = (RigidBodyControl)physicsControl;
+                PhysicsRay phyRay = PhysicsRayHelpers.getPhysicsRayForward(app.getCamera(), event.getX(), event.getY());
+                PhysicsRayResult result = PhysicsRayHelpers.getClosestResult(bulletAppState.getPhysicsSpace(), phyRay);
+//                logger.log(Level.INFO, "CLOSEST OBJECT: Spatial: {0}, CollisionObject: {1}",
+//                        new Object[]{
+//                            result.getSpatial().getName(),
+//                            result.getCollisionObject().toString()
+//                        });
+                    if (result.getCollisionObject() instanceof RigidBodyControl) {
+                        RigidBodyControl rigidBodyControl = (RigidBodyControl)result.getCollisionObject();
+                        if (rigidBodyControl.getMass() > 0f) { // don't try to move static objects
                             Vector3f force = rigidBodyControl.getGravity().negate().mult(rigidBodyControl.getMass());
                             force.multLocal(0.5f);
 //                            logger.log(Level.INFO, "gravity: {0}, mass: {1}, force: {2}",
 //                                    new Object[]{rigidBodyControl.getGravity(), rigidBodyControl.getMass(), force});
-                            ((RigidBodyControl)physicsControl).applyImpulse(force, Vector3f.ZERO);
+                            rigidBodyControl.applyImpulse(force, Vector3f.ZERO);
                             consumed = true;
                         }
-                    } else {
-                        logger.log(Level.INFO, "Geometry and all parents do not have a PhysicsControl");
                     }
-                }
+
                 break;
             default:
                 break;

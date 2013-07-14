@@ -7,14 +7,14 @@ import com.jme3.ai.navmesh.Path;
 import com.jme3.android.demo.Main;
 import com.jme3.android.demo.system.CharacterHandler;
 import com.jme3.android.demo.utils.GeometryUtils;
-import com.jme3.android.demo.utils.PickingHelpers;
+import com.jme3.android.demo.utils.physicsray.PhysicsRay;
+import com.jme3.android.demo.utils.physicsray.PhysicsRayHelpers;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.BetterCharacterControl;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
@@ -76,6 +76,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         logger.log(Level.INFO, "Creating NavMesh and PathFinder");
         navMesh = new NavMesh(navMeshSpatial.getMesh());
         navMeshPathFinder = new NavMeshPathfinder(navMesh);
+        navMeshPathFinder.setEntityRadius(1f);
         navMeshDebugInfo = new DebugInfo();
         navWayPointsNode.detachAllChildren();
         this.rootNode.attachChild(navWayPointsNode);
@@ -86,6 +87,7 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
 //        logger.log(Level.INFO, "Starting Position: {0}, Target Position: {1}",
 //                new Object[]{startLocation, targetLocation});
 
+        logger.log(Level.INFO, "EntityRadius: {0}", navMeshPathFinder.getEntityRadius());
         navMeshPathFinder.setPosition(startLocation);
         navMeshPathFinder.computePath(targetLocation, navMeshDebugInfo);
 
@@ -124,11 +126,12 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
         //getNextWayPoint will return always the same waypoint until we manually advance to the next
         Path.Waypoint wayPoint = navMeshPathFinder.getNextWaypoint();
         if(wayPoint != null) {
+            navMeshPathFinder.warp(characterSpatial.getWorldTranslation());
             float distance = navMeshPathFinder.getDistanceToWaypoint();
             Vector3f vector = wayPoint.getPosition().subtract(characterSpatial.getWorldTranslation());
             vector.y = 0f; // y component not needed and messes up if navmesh has the waypoint a little in the air.
 //            logger.log(Level.INFO, "Distance: {0}, vector: {1}",
-//                    new Object[]{distance, vector});
+//                    new Object[]{distance, vector.length()});
             if(!(vector.length() < 0.5)){
                 //move the spatial to location while its not there
                 walkDirection.set(vector.normalize());
@@ -177,12 +180,18 @@ public class NavMeshCharacterMotion extends AbstractAppState implements
 
         switch (event.getType()) {
             case TAP:
-                Ray ray = PickingHelpers.getCameraRayForward(camera, event.getX(), event.getY());
-                Vector3f target = PickingHelpers.getClosestFilteredContactPoint(
-                        world, ground,
-                        ray);
+                PhysicsRay ray = PhysicsRayHelpers.getPhysicsRayForward(
+                        camera, event.getX(), event.getY());
+                Vector3f target = PhysicsRayHelpers.getClosestFilteredContactPoint(
+                        characterControl.getPhysicsSpace(), ground, ray);
+                logger.log(Level.INFO, "Selected Location: {0}", target);
+
                 if (target != null) {
                     characterHandler.setCharacterMotion(this);
+
+                    target = navMesh.snapPointToCell(navMesh.findClosestCell(target), target);
+                    logger.log(Level.INFO, "NavMesh Location: {0}", target);
+
                     computeNav(characterSpatial.getWorldTranslation(), target);
                     consumed = true;
 

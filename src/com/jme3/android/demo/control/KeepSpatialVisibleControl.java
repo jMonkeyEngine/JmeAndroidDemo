@@ -1,9 +1,10 @@
 package com.jme3.android.demo.control;
 
 import com.jme3.android.demo.camera.DemoCamera;
-import com.jme3.android.demo.utils.PickingHelpers;
-import com.jme3.collision.CollisionResult;
-import com.jme3.math.Ray;
+import com.jme3.android.demo.utils.physicsray.PhysicsRay;
+import com.jme3.android.demo.utils.physicsray.PhysicsRayHelpers;
+import com.jme3.android.demo.utils.physicsray.PhysicsRayResult;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
@@ -22,6 +23,7 @@ public class KeepSpatialVisibleControl extends AbstractControl {
     private DemoCamera demoCamera = null;
     private Node objects = null;
     private Vector3f spatialOffset = new Vector3f();
+    private PhysicsSpace physicsSpace = null;
 
     public KeepSpatialVisibleControl() {
     }
@@ -47,6 +49,10 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         spatialOffset.set(offset);
     }
 
+    public void setPhysicsSpace(PhysicsSpace physicsSpace) {
+        this.physicsSpace = physicsSpace;
+    }
+
     public void keepTargetVisible(float tpf) {
         float rayOffset = 0.75f;
 
@@ -69,14 +75,14 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         Vector3f targetToLeft = leftEnd.subtract(spatialLocation);
         float leftAngle = targetToCameraDirection.angleBetween(targetToLeft.normalize());
 
-        Ray rayLeft = new Ray(leftLocation, leftVector.normalize());
-        rayLeft.setLimit(leftVector.length() + rayOffset);
+        PhysicsRay rayLeft = new PhysicsRay(leftLocation, leftEnd);
+        PhysicsRayResult leftClosestResult =
+                PhysicsRayHelpers.getClosestExcludedResult(physicsSpace, spatial, rayLeft);
 
-        CollisionResult leftClosestResult = PickingHelpers.getClosestExcludedResult(objects, spatial, rayLeft);
         if (leftClosestResult != null) {
             okToResetZoom = false;
             leftDistToCollision = leftClosestResult.getDistance();
-            leftGeometry = leftClosestResult.getGeometry().getName();
+            leftGeometry = leftClosestResult.getSpatial().getName();
         }
 
         // ray to right of camera
@@ -86,14 +92,14 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         Vector3f targetToRight = rightEnd.subtract(spatialLocation);
         float rightAngle = targetToCameraDirection.angleBetween(targetToRight.normalize());
 
-        Ray rayRight = new Ray(rightLocation, rightVector.normalize());
-        rayRight.setLimit(rightVector.length() + rayOffset);
+        PhysicsRay rayRight = new PhysicsRay(rightLocation, rightEnd);
+        PhysicsRayResult rightClosestResult =
+                PhysicsRayHelpers.getClosestExcludedResult(physicsSpace, spatial, rayRight);
 
-        CollisionResult rightClosestResult = PickingHelpers.getClosestExcludedResult(objects, spatial, rayRight);
         if (rightClosestResult != null) {
             okToResetZoom = false;
             rightDistToCollision = rightClosestResult.getDistance();
-            rightGeometry = rightClosestResult.getGeometry().getName();
+            rightGeometry = rightClosestResult.getSpatial().getName();
         }
 
 

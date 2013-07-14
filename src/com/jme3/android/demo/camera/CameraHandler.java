@@ -3,16 +3,13 @@ package com.jme3.android.demo.camera;
 import com.jme3.android.demo.control.KeepSpatialVisibleControl;
 import com.jme3.android.demo.input.InputActionListener;
 import com.jme3.android.demo.input.InputHandler;
-import com.jme3.android.demo.utils.PickingHelpers;
-import com.jme3.collision.CollisionResult;
+import com.jme3.bullet.PhysicsSpace;
 import com.jme3.input.event.TouchEvent;
 import com.jme3.math.FastMath;
-import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CameraHandler implements InputActionListener {
@@ -104,7 +101,7 @@ public class CameraHandler implements InputActionListener {
         }
     }
 
-    public void enableKeepCharVisible(Node objects) {
+    public void enableKeepCharVisible(PhysicsSpace physicsSpace, Node objects) {
         if (keepCharVisControl != null && keepCharVisControl.getSpatial() != null) {
             keepCharVisControl.getSpatial().removeControl(KeepSpatialVisibleControl.class);
         }
@@ -112,6 +109,7 @@ public class CameraHandler implements InputActionListener {
         keepCharVisControl.setObjects(objects);
         keepCharVisControl.setCamera(activeCamera);
         keepCharVisControl.setSpatialOffset(lookAtOffset);
+        keepCharVisControl.setPhysicsSpace(physicsSpace);
         target.addControl(keepCharVisControl);
     }
 
