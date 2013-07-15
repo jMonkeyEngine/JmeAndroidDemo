@@ -14,6 +14,11 @@ import com.jme3.scene.control.AbstractControl;
 import java.util.logging.Logger;
 
 /**
+ * KeepSpatialVisibleControl automatically rotates/zooms the camera to try to keep
+ * the target spatial in view.  This is done by creating 2 PhysicsRays between
+ * the spatial and the camera.  If only 1 ray is blocked, the camera rotates.
+ * When both rays are blocked, the camera zooms in until the rays aren't blocked
+ * anymore.
  *
  * @author iwgeric
  */
