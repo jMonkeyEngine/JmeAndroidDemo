@@ -22,7 +22,16 @@ public class KeepSpatialVisibleControl extends AbstractControl {
 
     private DemoCamera demoCamera = null;
     private Node objects = null;
+    private Vector3f spatialLocation = new Vector3f();
     private Vector3f spatialOffset = new Vector3f();
+    private Vector3f targetToCamera = new Vector3f();
+    private Vector3f targetToCameraDirection = new Vector3f();
+    private Vector3f leftLocation = new Vector3f();
+    private Vector3f leftEnd = new Vector3f();
+    private Vector3f targetToLeft = new Vector3f();
+    private Vector3f rightLocation = new Vector3f();
+    private Vector3f rightEnd = new Vector3f();
+    private Vector3f targetToRight = new Vector3f();
     private PhysicsSpace physicsSpace = null;
 
     public KeepSpatialVisibleControl() {
@@ -59,20 +68,17 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         float leftDistToCollision = 9999f;
         float rightDistToCollision = 9999f;
         boolean okToResetZoom = true;
-        String leftGeometry = "null";
-        String rightGeometry = "null";
         Camera camera = demoCamera.getCamera();
-        Vector3f spatialLocation = spatial.getWorldTranslation().add(spatialOffset);
 
-        Vector3f targetToCamera = camera.getLocation().subtract(spatialLocation);
-        Vector3f targetToCameraDirection = targetToCamera.normalize();
-        float distToCamera = targetToCamera.length();
+        spatialLocation.set(spatial.getWorldTranslation()).addLocal(spatialOffset);
+        targetToCamera.set(camera.getLocation()).subtractLocal(spatialLocation);
+        targetToCameraDirection.set(targetToCamera).normalizeLocal();
+        float distToCamera = (camera.getLocation().subtract(spatialLocation)).length();
 
         // ray to left of camera
-        Vector3f leftLocation = new Vector3f(camera.getLeft()).multLocal(rayOffset).addLocal(spatialLocation);
-        Vector3f leftEnd = new Vector3f(camera.getLeft()).multLocal(rayOffset).addLocal(camera.getLocation());
-        Vector3f leftVector = new Vector3f(leftEnd.subtract(leftLocation));
-        Vector3f targetToLeft = leftEnd.subtract(spatialLocation);
+        leftLocation.set(camera.getLeft()).multLocal(rayOffset).addLocal(spatialLocation);
+        leftEnd.set(camera.getLeft()).multLocal(rayOffset).addLocal(camera.getLocation());
+        targetToLeft.set(leftEnd).subtractLocal(spatialLocation);
         float leftAngle = targetToCameraDirection.angleBetween(targetToLeft.normalize());
 
         PhysicsRay rayLeft = new PhysicsRay(leftLocation, leftEnd);
@@ -82,14 +88,12 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         if (leftClosestResult != null) {
             okToResetZoom = false;
             leftDistToCollision = leftClosestResult.getDistance();
-            leftGeometry = leftClosestResult.getSpatial().getName();
         }
 
         // ray to right of camera
-        Vector3f rightLocation = new Vector3f(camera.getLeft()).negateLocal().multLocal(rayOffset).addLocal(spatialLocation);
-        Vector3f rightEnd = new Vector3f(camera.getLeft()).negateLocal().multLocal(rayOffset).addLocal(camera.getLocation());
-        Vector3f rightVector = new Vector3f(rightEnd.subtract(rightLocation));
-        Vector3f targetToRight = rightEnd.subtract(spatialLocation);
+        rightLocation.set(camera.getLeft()).negateLocal().multLocal(rayOffset).addLocal(spatialLocation);
+        rightEnd.set(camera.getLeft()).negateLocal().multLocal(rayOffset).addLocal(camera.getLocation());
+        targetToRight.set(rightEnd).subtractLocal(spatialLocation);
         float rightAngle = targetToCameraDirection.angleBetween(targetToRight.normalize());
 
         PhysicsRay rayRight = new PhysicsRay(rightLocation, rightEnd);
@@ -99,7 +103,6 @@ public class KeepSpatialVisibleControl extends AbstractControl {
         if (rightClosestResult != null) {
             okToResetZoom = false;
             rightDistToCollision = rightClosestResult.getDistance();
-            rightGeometry = rightClosestResult.getSpatial().getName();
         }
 
 
